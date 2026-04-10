@@ -1,0 +1,24 @@
+# Rust
+target/
+Cargo.lock
+
+# Entorno
+.env
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/.astro/
+frontend/dist/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

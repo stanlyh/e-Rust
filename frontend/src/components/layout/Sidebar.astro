@@ -1,0 +1,46 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { href: '/calendar',    label: 'Calendario',    icon: '📅' },
+  { href: '/pipeline',    label: 'Pipeline',      icon: '📊' },
+  { href: '/leads',       label: 'Leads',         icon: '🎯' },
+  { href: '/clients',     label: 'Clientes',      icon: '👥' },
+  { href: '/vehicles',    label: 'Vehiculos',     icon: '🚗' },
+  { href: '/reports',     label: 'Reportes',      icon: '📈' },
+];
+---
+
+<aside class="w-56 bg-white border-r border-gray-200 flex flex-col shrink-0">
+  <div class="h-16 flex items-center px-4 border-b border-gray-200">
+    <span class="font-bold text-lg text-blue-600">CRM Vehiculos</span>
+  </div>
+
+  <nav class="flex-1 py-4 space-y-1 px-2">
+    {navItems.map(item => (
+      <a
+        href={item.href}
+        class={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+          currentPath.startsWith(item.href)
+            ? 'bg-blue-50 text-blue-700'
+            : 'text-gray-600 hover:bg-gray-100'
+        }`}
+      >
+        <span>{item.icon}</span>
+        <span>{item.label}</span>
+      </a>
+    ))}
+  </nav>
+
+  <div class="p-3 border-t border-gray-200">
+    <form action="/api/auth/logout" method="POST">
+      <button
+        type="submit"
+        class="w-full text-left flex items-center gap-3 px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+      >
+        <span>🚪</span>
+        <span>Cerrar sesion</span>
+      </button>
+    </form>
+  </div>
+</aside>
