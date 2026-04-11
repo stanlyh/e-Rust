@@ -4,19 +4,19 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
-import { activitiesApi, type Activity, type CalendarEvent } from '../../lib/api/activities';
+import { activitiesApi, type Activity, type CalendarEvent, type ExpiringOpportunity } from '../../lib/api/activities';
 import ActivitySidebar from './ActivitySidebar';
 import ActivityModal from './ActivityModal';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 
 const TYPE_COLORS: Record<string, string> = {
-  call:       '#3b82f6', // azul
-  email:      '#6b7280', // gris
-  visit:      '#10b981', // verde
-  whatsapp:   '#25d366', // verde whatsapp
-  meeting:    '#8b5cf6', // morado
-  test_drive: '#f97316', // naranja
-  delivery:   '#eab308', // amarillo dorado
+  call:       '#3b82f6',
+  email:      '#6b7280',
+  visit:      '#10b981',
+  whatsapp:   '#25d366',
+  meeting:    '#8b5cf6',
+  test_drive: '#f97316',
+  delivery:   '#eab308',
 };
 
 export default function CalendarMain() {
@@ -24,6 +24,7 @@ export default function CalendarMain() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [upcomingActivities, setUpcomingActivities] = useState<Activity[]>([]);
   const [overdueCount, setOverdueCount] = useState(0);
+  const [expiringOpportunities, setExpiringOpportunities] = useState<ExpiringOpportunity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [newActivityDate, setNewActivityDate] = useState<string | null>(null);
@@ -36,6 +37,7 @@ export default function CalendarMain() {
       );
       setEvents(res.events);
       setOverdueCount(res.overdue_count);
+      setExpiringOpportunities(res.expiring_opportunities ?? []);
     } catch (err) {
       console.error('Error cargando calendario:', err);
     }
@@ -139,6 +141,7 @@ export default function CalendarMain() {
       <ActivitySidebar
         upcomingActivities={upcomingActivities}
         overdueCount={overdueCount}
+        expiringOpportunities={expiringOpportunities}
         onActivityClick={(activity) => {
           setSelectedActivity(activity);
           setShowModal(true);

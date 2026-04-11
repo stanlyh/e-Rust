@@ -109,6 +109,7 @@ pub struct CalendarEvent {
 pub struct CalendarResponse {
     pub events: Vec<CalendarEvent>,
     pub overdue_count: i64,
+    pub expiring_opportunities: Vec<crate::models::opportunity::ExpiringOpportunity>,
 }
 
 #[derive(Debug, Deserialize, Validate)]

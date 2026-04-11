@@ -32,9 +32,19 @@ export interface CalendarEvent {
   extendedProps: Activity;
 }
 
+export interface ExpiringOpportunity {
+  id: string;
+  title: string;
+  expected_close: string;
+  days_remaining: number;
+  probability: number;
+  offered_price?: string;
+}
+
 export interface CalendarResponse {
   events: CalendarEvent[];
   overdue_count: number;
+  expiring_opportunities: ExpiringOpportunity[];
 }
 
 export interface ActivityCreate {

@@ -2,19 +2,29 @@ import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import type { Activity } from '../../lib/api/activities';
 
+export interface ExpiringOpportunity {
+  id: string;
+  title: string;
+  expected_close: string;
+  days_remaining: number;
+  probability: number;
+  offered_price?: string;
+}
+
 const TYPE_LABELS: Record<string, string> = {
-  call: '📞 Llamada',
-  email: '📧 Email',
-  visit: '🏢 Visita',
-  whatsapp: '💬 WhatsApp',
-  meeting: '🤝 Reunion',
+  call:       '📞 Llamada',
+  email:      '📧 Email',
+  visit:      '🏢 Visita',
+  whatsapp:   '💬 WhatsApp',
+  meeting:    '🤝 Reunion',
   test_drive: '🚗 Test Drive',
-  delivery: '🎉 Entrega',
+  delivery:   '🎉 Entrega',
 };
 
 interface Props {
   upcomingActivities: Activity[];
   overdueCount: number;
+  expiringOpportunities: ExpiringOpportunity[];
   onActivityClick: (activity: Activity) => void;
   onNewActivity: () => void;
 }
@@ -22,11 +32,12 @@ interface Props {
 export default function ActivitySidebar({
   upcomingActivities,
   overdueCount,
+  expiringOpportunities,
   onActivityClick,
   onNewActivity,
 }: Props) {
   return (
-    <div className="w-72 flex flex-col gap-4 shrink-0">
+    <div className="w-72 flex flex-col gap-3 shrink-0">
       <button
         onClick={onNewActivity}
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm"
@@ -34,14 +45,45 @@ export default function ActivitySidebar({
         + Nueva Actividad
       </button>
 
+      {/* Alerta de actividades vencidas */}
       {overdueCount > 0 && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3">
           <p className="text-red-700 text-sm font-medium">
-            ⚠️ {overdueCount} actividad{overdueCount > 1 ? 'es' : ''} vencida{overdueCount > 1 ? 's' : ''}
+            ⚠️ {overdueCount} actividad{overdueCount !== 1 ? 'es' : ''} vencida{overdueCount !== 1 ? 's' : ''}
           </p>
+          <p className="text-red-500 text-xs mt-0.5">Sin completar y fuera de fecha</p>
         </div>
       )}
 
+      {/* Oportunidades proximas a vencer */}
+      {expiringOpportunities.length > 0 && (
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+          <p className="text-orange-700 text-sm font-semibold mb-2">
+            🔔 Oportunidades por vencer
+          </p>
+          <ul className="space-y-2">
+            {expiringOpportunities.map(opp => (
+              <li key={opp.id} className="text-xs">
+                <p className="font-medium text-orange-800 truncate">{opp.title}</p>
+                <div className="flex items-center justify-between text-orange-600 mt-0.5">
+                  <span>
+                    {opp.days_remaining === 0
+                      ? 'Vence hoy'
+                      : `${opp.days_remaining} dia${opp.days_remaining !== 1 ? 's' : ''}`}
+                  </span>
+                  {opp.offered_price && (
+                    <span className="font-semibold">
+                      ${Number(opp.offered_price).toLocaleString('es-MX', { maximumFractionDigits: 0 })}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Proximas actividades */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex-1 overflow-hidden flex flex-col">
         <div className="p-4 border-b border-gray-100">
           <h2 className="text-sm font-semibold text-gray-700">Proximas actividades</h2>
