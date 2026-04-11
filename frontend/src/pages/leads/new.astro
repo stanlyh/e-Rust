@@ -1,0 +1,12 @@
+---
+import PageShell from '../../components/layout/PageShell.astro';
+import LeadForm from '../../islands/leads/LeadForm';
+---
+<PageShell title="Nuevo Lead">
+  <div class="max-w-xl">
+    <div class="mb-6">
+      <a href="/leads" class="text-sm text-gray-500 hover:text-blue-600">← Volver a Leads</a>
+    </div>
+    <LeadForm client:load />
+  </div>
+</PageShell>

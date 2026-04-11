@@ -1,0 +1,69 @@
+---
+import PageShell from '../../components/layout/PageShell.astro';
+---
+<PageShell title="Detalle de Lead">
+  <div class="mb-4">
+    <a href="/leads" class="text-sm text-gray-500 hover:text-blue-600">← Volver a Leads</a>
+  </div>
+  <div id="lead-detail" class="max-w-2xl">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 animate-pulse">
+      <div class="h-6 bg-gray-100 rounded mb-4 w-1/3"></div>
+      <div class="h-4 bg-gray-100 rounded mb-2"></div>
+      <div class="h-4 bg-gray-100 rounded w-2/3"></div>
+    </div>
+  </div>
+
+  <script>
+    import { leadsApi, SOURCE_LABELS, STATUS_LABELS, STATUS_COLORS } from '../../lib/api/leads';
+    import { initAuth } from '../../lib/auth/store';
+
+    const id = window.location.pathname.split('/').pop()!;
+    await initAuth();
+
+    try {
+      const lead = await leadsApi.getById(id);
+      const container = document.getElementById('lead-detail')!;
+
+      container.innerHTML = `
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
+          <div class="flex items-start justify-between">
+            <div>
+              <span class="text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLORS[lead.status]}">
+                ${STATUS_LABELS[lead.status]}
+              </span>
+            </div>
+            <span class="text-xs text-gray-400">${new Date(lead.created_at).toLocaleDateString('es-MX')}</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p class="text-xs text-gray-500">Fuente</p>
+              <p class="font-medium">${SOURCE_LABELS[lead.source]}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Vehiculo de interes</p>
+              <p class="font-medium">${[lead.interest_year, lead.interest_make, lead.interest_model].filter(Boolean).join(' ') || '—'}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Presupuesto minimo</p>
+              <p class="font-medium">${lead.budget_min ? '$' + lead.budget_min : '—'}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Presupuesto maximo</p>
+              <p class="font-medium">${lead.budget_max ? '$' + lead.budget_max : '—'}</p>
+            </div>
+          </div>
+
+          ${lead.notes ? `
+          <div>
+            <p class="text-xs text-gray-500 mb-1">Notas</p>
+            <p class="text-sm text-gray-700">${lead.notes}</p>
+          </div>` : ''}
+        </div>
+      `;
+    } catch {
+      document.getElementById('lead-detail')!.innerHTML =
+        '<p class="text-red-500 text-sm">Error cargando el lead</p>';
+    }
+  </script>
+</PageShell>
