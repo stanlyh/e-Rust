@@ -11,12 +11,24 @@ const navItems = [
 ];
 ---
 
-<aside class="w-56 bg-white border-r border-gray-200 flex flex-col shrink-0">
-  <div class="h-16 flex items-center px-4 border-b border-gray-200">
+<aside
+  id="sidebar"
+  class="fixed inset-y-0 left-0 z-40 w-56 bg-white border-r border-gray-200 flex flex-col shrink-0
+         -translate-x-full md:translate-x-0 md:static md:inset-auto md:z-auto
+         transition-transform duration-200 ease-in-out"
+>
+  <div class="h-16 flex items-center justify-between px-4 border-b border-gray-200">
     <span class="font-bold text-lg text-blue-600">CRM Vehiculos</span>
+    <button
+      id="sidebar-close"
+      class="md:hidden text-gray-400 hover:text-gray-600 text-xl leading-none p-1"
+      aria-label="Cerrar menu"
+    >
+      ×
+    </button>
   </div>
 
-  <nav class="flex-1 py-4 space-y-1 px-2">
+  <nav class="flex-1 py-4 space-y-1 px-2 overflow-y-auto">
     {navItems.map(item => (
       <a
         href={item.href}

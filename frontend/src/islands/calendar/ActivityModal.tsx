@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format, parseISO } from 'date-fns';
 import { activitiesApi, type Activity, type ActivityType } from '../../lib/api/activities';
+import { toast } from '../../lib/toast';
 
 const activitySchema = z.object({
   title: z.string().min(2, 'Minimo 2 caracteres').max(255),
@@ -74,12 +75,14 @@ export default function ActivityModal({ activity, defaultDate, onClose, onSaved 
     try {
       if (activity) {
         await activitiesApi.update(activity.id, data);
+        toast.success('Actividad actualizada');
       } else {
         await activitiesApi.create(data);
+        toast.success('Actividad creada');
       }
       onSaved();
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast.error('Error guardando la actividad');
     }
   };
 
@@ -91,9 +94,10 @@ export default function ActivityModal({ activity, defaultDate, onClose, onSaved 
         outcome,
         next_action: nextAction || undefined,
       });
+      toast.success('Actividad completada ✓');
       onSaved();
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast.error('Error al completar la actividad');
     } finally {
       setSaving(false);
     }
@@ -103,9 +107,10 @@ export default function ActivityModal({ activity, defaultDate, onClose, onSaved 
     if (!activity || !confirm('¿Eliminar esta actividad?')) return;
     try {
       await activitiesApi.delete(activity.id);
+      toast.info('Actividad eliminada');
       onSaved();
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast.error('Error al eliminar la actividad');
     }
   };
 

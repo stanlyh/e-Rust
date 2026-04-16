@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { toast } from '../../lib/toast';
+import { ErrorState } from '../ui/ErrorState';
 import {
   DndContext,
   DragOverlay,
@@ -13,6 +15,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-
 import { CSS } from '@dnd-kit/utilities';
 import {
   opportunitiesApi,
+
   STATUS_COLORS,
   STATUS_LABELS,
   STAGE_ORDER,
@@ -118,7 +121,8 @@ export default function KanbanBoard() {
       });
       setColumns(filled);
     } catch {
-      setError('Error cargando el pipeline');
+      setError('No se pudo cargar el pipeline.');
+      toast.error('Error cargando el pipeline');
     } finally {
       setLoading(false);
     }
@@ -165,8 +169,9 @@ export default function KanbanBoard() {
 
     try {
       await opportunitiesApi.updateStatus(draggedOpp.id, targetStatus);
+      toast.success(`Movido a ${targetStatus.replace('_', ' ')}`);
     } catch {
-      // Revertir si falla
+      toast.error('Error al mover la oportunidad');
       load();
     }
   };
@@ -179,7 +184,7 @@ export default function KanbanBoard() {
     </div>
   );
 
-  if (error) return <p className="text-red-500 text-sm">{error}</p>;
+  if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
     <DndContext

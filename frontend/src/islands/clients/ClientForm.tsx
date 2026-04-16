@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { clientsApi } from '../../lib/api/clients';
+import { toast } from '../../lib/toast';
 
 const schema = z.object({
   first_name: z.string().min(1, 'Requerido').max(100),
@@ -29,8 +30,10 @@ export default function ClientForm() {
         phone: data.phone || undefined,
         mobile: data.mobile || undefined,
       });
+      toast.success('Cliente creado correctamente');
       window.location.href = `/clients/${client.id}`;
     } catch {
+      toast.error('Error al crear el cliente');
       setError('root', { message: 'Error al crear el cliente.' });
     }
   };

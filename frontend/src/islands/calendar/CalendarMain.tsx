@@ -102,18 +102,23 @@ export default function CalendarMain() {
   }));
 
   return (
-    <div className="flex gap-4 h-full">
+    <div className="flex flex-col lg:flex-row gap-4 h-full">
       {/* Calendario principal */}
-      <div className="flex-1 bg-white rounded-xl border border-gray-200 shadow-sm p-4 overflow-hidden">
+      <div className="flex-1 bg-white rounded-xl border border-gray-200 shadow-sm p-3 md:p-4 overflow-hidden min-h-[400px]">
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
           locale={esLocale}
           headerToolbar={{
-            left: 'prev,next today',
+            left: 'prev,next',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+            right: 'today dayGridMonth,timeGridWeek,timeGridDay',
+          }}
+          views={{
+            dayGridMonth: { buttonText: 'Mes' },
+            timeGridWeek: { buttonText: 'Sem' },
+            timeGridDay:  { buttonText: 'Dia' },
           }}
           events={calendarEvents}
           editable={true}
@@ -133,11 +138,11 @@ export default function CalendarMain() {
             }
           }}
           height="100%"
-          buttonText={{ today: 'Hoy', month: 'Mes', week: 'Semana', day: 'Dia' }}
+          buttonText={{ today: 'Hoy' }}
         />
       </div>
 
-      {/* Sidebar lateral */}
+      {/* Sidebar lateral (colapsa en movil) */}
       <ActivitySidebar
         upcomingActivities={upcomingActivities}
         overdueCount={overdueCount}

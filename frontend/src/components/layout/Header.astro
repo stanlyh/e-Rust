@@ -5,18 +5,52 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
-  <h1 class="text-lg font-semibold text-gray-800">{title}</h1>
+<header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 shrink-0">
   <div class="flex items-center gap-3">
-    <span class="text-sm text-gray-500" id="current-date"></span>
+    <button
+      id="menu-btn"
+      class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+      aria-label="Abrir menu"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+    <h1 class="text-base md:text-lg font-semibold text-gray-800">{title}</h1>
+  </div>
+  <div class="flex items-center gap-3">
+    <span class="text-sm text-gray-500 hidden sm:block" id="current-date"></span>
   </div>
 </header>
 
 <script>
-  const el = document.getElementById('current-date');
-  if (el) {
-    el.textContent = new Date().toLocaleDateString('es-MX', {
+  // Mostrar fecha
+  const dateEl = document.getElementById('current-date');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString('es-MX', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
     });
   }
+
+  // Toggle sidebar en movil
+  const menuBtn = document.getElementById('menu-btn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const closeBtn = document.getElementById('sidebar-close');
+
+  function openSidebar() {
+    sidebar?.classList.remove('-translate-x-full');
+    overlay?.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden', 'md:overflow-auto');
+  }
+
+  function closeSidebar() {
+    sidebar?.classList.add('-translate-x-full');
+    overlay?.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
+  }
+
+  menuBtn?.addEventListener('click', openSidebar);
+  closeBtn?.addEventListener('click', closeSidebar);
+  overlay?.addEventListener('click', closeSidebar);
 </script>

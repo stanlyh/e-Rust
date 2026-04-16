@@ -37,7 +37,7 @@ export default function ActivitySidebar({
   onNewActivity,
 }: Props) {
   return (
-    <div className="w-72 flex flex-col gap-3 shrink-0">
+    <div className="w-full lg:w-72 flex flex-col gap-3 shrink-0">
       <button
         onClick={onNewActivity}
         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm"
@@ -84,7 +84,7 @@ export default function ActivitySidebar({
       )}
 
       {/* Proximas actividades */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex-1 overflow-hidden flex flex-col">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm lg:flex-1 overflow-hidden flex flex-col max-h-64 lg:max-h-none">
         <div className="p-4 border-b border-gray-100">
           <h2 className="text-sm font-semibold text-gray-700">Proximas actividades</h2>
         </div>

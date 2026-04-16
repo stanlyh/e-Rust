@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { leadsApi, SOURCE_LABELS } from '../../lib/api/leads';
+import { toast } from '../../lib/toast';
 
 const schema = z.object({
   source: z.enum(['web', 'referral', 'walk_in', 'phone', 'social_media', 'other']),
@@ -30,8 +31,10 @@ export default function LeadForm() {
         budget_max: data.budget_max ? Number(data.budget_max) : undefined,
         notes: data.notes || undefined,
       });
+      toast.success('Lead creado correctamente');
       window.location.href = `/leads/${lead.id}`;
     } catch {
+      toast.error('Error al crear el lead');
       setError('root', { message: 'Error al crear el lead. Intenta de nuevo.' });
     }
   };
