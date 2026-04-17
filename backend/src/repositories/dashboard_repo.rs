@@ -107,7 +107,7 @@ impl DashboardRepo {
 
         let avg_deal_days: f64 = sqlx::query_scalar!(
             r#"
-            SELECT COALESCE(AVG(EXTRACT(EPOCH FROM (closed_at - created_at)) / 86400), 0.0)
+            SELECT COALESCE(AVG(EXTRACT(EPOCH FROM (closed_at - created_at)) / 86400), 0.0)::FLOAT8
             FROM opportunities
             WHERE status = 'closed_won'
               AND ($1::bool = TRUE OR assigned_to = $2)

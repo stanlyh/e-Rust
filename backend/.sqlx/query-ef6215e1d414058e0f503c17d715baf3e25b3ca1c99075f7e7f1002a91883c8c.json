@@ -1,0 +1,54 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT id, title, expected_close, probability,\n                   offered_price,\n                   (expected_close - CURRENT_DATE) AS days_remaining\n            FROM opportunities\n            WHERE status NOT IN ('closed_won', 'closed_lost')\n              AND expected_close IS NOT NULL\n              AND expected_close <= CURRENT_DATE + $3::int * INTERVAL '1 day'\n              AND expected_close >= CURRENT_DATE\n              AND ($1::bool = TRUE OR assigned_to = $2)\n            ORDER BY expected_close ASC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "expected_close",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 3,
+        "name": "probability",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "offered_price",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 5,
+        "name": "days_remaining",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Bool",
+        "Uuid",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      true,
+      null
+    ]
+  },
+  "hash": "ef6215e1d414058e0f503c17d715baf3e25b3ca1c99075f7e7f1002a91883c8c"
+}

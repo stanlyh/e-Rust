@@ -1,0 +1,27 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT COUNT(*) FROM vehicles\n            WHERE ($1::text IS NULL OR make ILIKE $1)\n              AND ($2::text IS NULL OR model ILIKE $2)\n              AND ($3::smallint IS NULL OR year = $3)\n              AND ($4::bool IS NULL OR is_available = $4)\n              AND ($5::float8 IS NULL OR list_price >= $5)\n              AND ($6::float8 IS NULL OR list_price <= $6)\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Int2",
+        "Bool",
+        "Float8",
+        "Float8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "e4394d671a439db5cc4865063d14b3b0c67e71a88fcc5832ee7dad387868f84d"
+}

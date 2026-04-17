@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                TO_CHAR(DATE_TRUNC('month', closed_at), 'YYYY-MM') AS month,\n                COALESCE(SUM(final_price::float8), 0.0)            AS revenue,\n                COUNT(*)                                            AS count\n            FROM opportunities\n            WHERE status = 'closed_won'\n              AND closed_at >= NOW() - INTERVAL '12 months'\n              AND ($1::bool = TRUE OR assigned_to = $2)\n            GROUP BY DATE_TRUNC('month', closed_at)\n            ORDER BY DATE_TRUNC('month', closed_at) ASC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "month",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "revenue",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 2,
+        "name": "count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Bool",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "916bb4db0119097e1fa110e1852856636db8061c7b68af1ba3e56ad41766422c"
+}

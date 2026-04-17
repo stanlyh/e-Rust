@@ -214,7 +214,7 @@ impl OpportunityRepo {
                     id: r.id,
                     title: r.title,
                     expected_close: r.expected_close?,
-                    days_remaining: r.days_remaining?.days as i64,
+                    days_remaining: r.days_remaining? as i64,
                     probability: r.probability,
                     offered_price: r.offered_price.map(|v| v.to_string()),
                 })

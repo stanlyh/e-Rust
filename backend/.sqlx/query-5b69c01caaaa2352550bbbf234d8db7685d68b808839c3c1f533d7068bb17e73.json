@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                u.id::text                                                       AS user_id,\n                u.full_name,\n                COUNT(DISTINCT l.id)                                            AS leads,\n                COUNT(DISTINCT o.id) FILTER (WHERE o.status NOT IN ('closed_won','closed_lost')) AS opportunities_open,\n                COUNT(DISTINCT o.id) FILTER (\n                    WHERE o.status = 'closed_won'\n                    AND DATE_TRUNC('month', o.closed_at) = DATE_TRUNC('month', NOW())\n                )                                                               AS sales_this_month,\n                COALESCE(SUM(o.final_price::float8) FILTER (\n                    WHERE o.status = 'closed_won'\n                    AND DATE_TRUNC('month', o.closed_at) = DATE_TRUNC('month', NOW())\n                ), 0.0)                                                         AS revenue_this_month\n            FROM users u\n            LEFT JOIN leads l        ON l.assigned_to = u.id\n            LEFT JOIN opportunities o ON o.assigned_to = u.id\n            WHERE u.is_active = TRUE AND u.role = 'sales_agent'\n            GROUP BY u.id, u.full_name\n            ORDER BY revenue_this_month DESC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "full_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "leads",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "opportunities_open",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "sales_this_month",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "revenue_this_month",
+        "type_info": "Float8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      false,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "5b69c01caaaa2352550bbbf234d8db7685d68b808839c3c1f533d7068bb17e73"
+}

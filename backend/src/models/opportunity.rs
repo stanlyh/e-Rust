@@ -27,7 +27,7 @@ pub struct OpportunityRow {
     pub offered_price: Option<sqlx::types::BigDecimal>,
     pub discount: Option<sqlx::types::BigDecimal>,
     pub final_price: Option<sqlx::types::BigDecimal>,
-    pub probability: i16,
+    pub probability: Option<i16>,
     pub expected_close: Option<NaiveDate>,
     pub closed_at: Option<DateTime<Utc>>,
     pub lost_reason: Option<String>,
@@ -48,7 +48,7 @@ pub struct OpportunityResponse {
     pub offered_price: Option<String>,
     pub discount: Option<String>,
     pub final_price: Option<String>,
-    pub probability: i16,
+    pub probability: Option<i16>,
     pub expected_close: Option<NaiveDate>,
     pub closed_at: Option<DateTime<Utc>>,
     pub lost_reason: Option<String>,
@@ -100,7 +100,7 @@ pub struct ExpiringOpportunity {
     pub title: String,
     pub expected_close: NaiveDate,
     pub days_remaining: i64,
-    pub probability: i16,
+    pub probability: Option<i16>,
     pub offered_price: Option<String>,
 }
 

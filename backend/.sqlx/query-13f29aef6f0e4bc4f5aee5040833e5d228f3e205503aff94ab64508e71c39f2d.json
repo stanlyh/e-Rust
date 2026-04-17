@@ -1,0 +1,227 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO vehicles\n                (vin, stock_number, make, model, year, trim,\n                 color_exterior, color_interior,\n                 fuel_type, transmission, mileage, condition,\n                 list_price, description, images, features)\n            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)\n            RETURNING id, vin, stock_number, make, model, year, trim,\n                      color_exterior, color_interior,\n                      fuel_type AS \"fuel_type: _\",\n                      transmission AS \"transmission: _\",\n                      mileage,\n                      condition AS \"condition: _\",\n                      list_price, cost_price, is_available,\n                      description, images, features,\n                      created_at, updated_at\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "vin",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "stock_number",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "make",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "model",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "year",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 6,
+        "name": "trim",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "color_exterior",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 8,
+        "name": "color_interior",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "fuel_type: _",
+        "type_info": {
+          "Custom": {
+            "name": "fuel_type",
+            "kind": {
+              "Enum": [
+                "gasoline",
+                "diesel",
+                "hybrid",
+                "electric",
+                "other"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 10,
+        "name": "transmission: _",
+        "type_info": {
+          "Custom": {
+            "name": "transmission_type",
+            "kind": {
+              "Enum": [
+                "manual",
+                "automatic",
+                "cvt"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 11,
+        "name": "mileage",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 12,
+        "name": "condition: _",
+        "type_info": {
+          "Custom": {
+            "name": "vehicle_condition",
+            "kind": {
+              "Enum": [
+                "new",
+                "used",
+                "certified_used"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 13,
+        "name": "list_price",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 14,
+        "name": "cost_price",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 15,
+        "name": "is_available",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 16,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 17,
+        "name": "images",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 18,
+        "name": "features",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 19,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 20,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Int2",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        {
+          "Custom": {
+            "name": "fuel_type",
+            "kind": {
+              "Enum": [
+                "gasoline",
+                "diesel",
+                "hybrid",
+                "electric",
+                "other"
+              ]
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "transmission_type",
+            "kind": {
+              "Enum": [
+                "manual",
+                "automatic",
+                "cvt"
+              ]
+            }
+          }
+        },
+        "Int4",
+        {
+          "Custom": {
+            "name": "vehicle_condition",
+            "kind": {
+              "Enum": [
+                "new",
+                "used",
+                "certified_used"
+              ]
+            }
+          }
+        },
+        "Numeric",
+        "Text",
+        "Jsonb",
+        "Jsonb"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "13f29aef6f0e4bc4f5aee5040833e5d228f3e205503aff94ab64508e71c39f2d"
+}

@@ -1,0 +1,140 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO opportunities\n                (client_id, lead_id, vehicle_id, assigned_to, title,\n                 offered_price, probability, expected_close, notes)\n            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)\n            RETURNING id, lead_id, client_id, vehicle_id, assigned_to,\n                      status AS \"status: _\", title,\n                      offered_price, discount, final_price,\n                      probability, expected_close, closed_at,\n                      lost_reason, notes, created_at, updated_at\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "lead_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "client_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "vehicle_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 4,
+        "name": "assigned_to",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 5,
+        "name": "status: _",
+        "type_info": {
+          "Custom": {
+            "name": "opportunity_status",
+            "kind": {
+              "Enum": [
+                "prospecting",
+                "needs_analysis",
+                "proposal",
+                "negotiation",
+                "closed_won",
+                "closed_lost"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "offered_price",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 8,
+        "name": "discount",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 9,
+        "name": "final_price",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 10,
+        "name": "probability",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 11,
+        "name": "expected_close",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 12,
+        "name": "closed_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 13,
+        "name": "lost_reason",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 14,
+        "name": "notes",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 15,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 16,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Varchar",
+        "Numeric",
+        "Int2",
+        "Date",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "3f0d74ef229c2f21f444fe643504242f5fc007538c7fce74d0752c853e182a5f"
+}

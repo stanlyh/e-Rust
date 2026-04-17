@@ -1,0 +1,133 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT id, client_id, assigned_to,\n                   source AS \"source: _\", status AS \"status: _\",\n                   interest_make, interest_model, interest_year,\n                   budget_min, budget_max, notes,\n                   contacted_at, qualified_at,\n                   created_at, updated_at\n            FROM leads WHERE id = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "client_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "assigned_to",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "source: _",
+        "type_info": {
+          "Custom": {
+            "name": "lead_source",
+            "kind": {
+              "Enum": [
+                "web",
+                "referral",
+                "walk_in",
+                "phone",
+                "social_media",
+                "other"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "status: _",
+        "type_info": {
+          "Custom": {
+            "name": "lead_status",
+            "kind": {
+              "Enum": [
+                "new",
+                "contacted",
+                "qualified",
+                "unqualified",
+                "converted"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "interest_make",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "interest_model",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "interest_year",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 8,
+        "name": "budget_min",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 9,
+        "name": "budget_max",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 10,
+        "name": "notes",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "contacted_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 12,
+        "name": "qualified_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 13,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 14,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "87805b05a66b0e420d2d350336dc8293b7f72878eba51c69cc272cea2332770c"
+}

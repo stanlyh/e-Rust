@@ -1,0 +1,169 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE activities SET\n                title           = COALESCE($2, title),\n                description     = COALESCE($3, description),\n                type            = COALESCE($4, type),\n                scheduled_start = COALESCE($5, scheduled_start),\n                scheduled_end   = COALESCE($6, scheduled_end),\n                client_id       = COALESCE($7, client_id),\n                lead_id         = COALESCE($8, lead_id),\n                opportunity_id  = COALESCE($9, opportunity_id),\n                vehicle_id      = COALESCE($10, vehicle_id)\n            WHERE id = $1\n            RETURNING id, title, description,\n                      type AS \"type: _\", status AS \"status: _\",\n                      scheduled_start, scheduled_end, completed_at,\n                      outcome, next_action, assigned_to,\n                      client_id, lead_id, opportunity_id, vehicle_id,\n                      created_at, updated_at\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "type: _",
+        "type_info": {
+          "Custom": {
+            "name": "activity_type",
+            "kind": {
+              "Enum": [
+                "call",
+                "email",
+                "visit",
+                "whatsapp",
+                "meeting",
+                "test_drive",
+                "delivery"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "status: _",
+        "type_info": {
+          "Custom": {
+            "name": "activity_status",
+            "kind": {
+              "Enum": [
+                "scheduled",
+                "completed",
+                "cancelled",
+                "rescheduled"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "scheduled_start",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "scheduled_end",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "completed_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "outcome",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "next_action",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "assigned_to",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 11,
+        "name": "client_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 12,
+        "name": "lead_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 13,
+        "name": "opportunity_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 14,
+        "name": "vehicle_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 15,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 16,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Varchar",
+        "Text",
+        {
+          "Custom": {
+            "name": "activity_type",
+            "kind": {
+              "Enum": [
+                "call",
+                "email",
+                "visit",
+                "whatsapp",
+                "meeting",
+                "test_drive",
+                "delivery"
+              ]
+            }
+          }
+        },
+        "Timestamptz",
+        "Timestamptz",
+        "Uuid",
+        "Uuid",
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "e6ae00f7ad8c104c00787f065703e9c98e77993b11f6db6d12468307e232531c"
+}

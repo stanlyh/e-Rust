@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT COUNT(*) FROM activities\n            WHERE assigned_to = $1\n              AND status = 'scheduled'\n              AND scheduled_end < NOW()\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "46478ca93b248a2c9cbafdcefe096bac4d2c4cf843f1873dfe0092ca2f0874ba"
+}

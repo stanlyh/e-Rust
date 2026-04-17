@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT COUNT(*) FROM opportunities WHERE status = 'closed_won'\n               AND ($1::bool = TRUE OR assigned_to = $2)",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Bool",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "fc10bd8dcd90aec1d7249f6bf93830652cbdf2709387aedd79bdef6924299d6f"
+}

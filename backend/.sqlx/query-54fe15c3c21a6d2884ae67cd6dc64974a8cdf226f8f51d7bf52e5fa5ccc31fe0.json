@@ -1,0 +1,133 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT id, lead_id, client_id, vehicle_id, assigned_to,\n                   status AS \"status: _\", title,\n                   offered_price, discount, final_price,\n                   probability, expected_close, closed_at,\n                   lost_reason, notes, created_at, updated_at\n            FROM opportunities\n            WHERE status NOT IN ('closed_won', 'closed_lost')\n              AND ($1::bool = TRUE OR assigned_to = $2)\n            ORDER BY created_at DESC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "lead_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "client_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 3,
+        "name": "vehicle_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 4,
+        "name": "assigned_to",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 5,
+        "name": "status: _",
+        "type_info": {
+          "Custom": {
+            "name": "opportunity_status",
+            "kind": {
+              "Enum": [
+                "prospecting",
+                "needs_analysis",
+                "proposal",
+                "negotiation",
+                "closed_won",
+                "closed_lost"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "offered_price",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 8,
+        "name": "discount",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 9,
+        "name": "final_price",
+        "type_info": "Numeric"
+      },
+      {
+        "ordinal": 10,
+        "name": "probability",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 11,
+        "name": "expected_close",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 12,
+        "name": "closed_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 13,
+        "name": "lost_reason",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 14,
+        "name": "notes",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 15,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 16,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Bool",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "54fe15c3c21a6d2884ae67cd6dc64974a8cdf226f8f51d7bf52e5fa5ccc31fe0"
+}
