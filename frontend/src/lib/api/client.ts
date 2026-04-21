@@ -1,6 +1,6 @@
 import { $accessToken, initAuth, scheduleRefresh } from '../auth/store';
 
-const BACKEND_URL = import.meta.env.PUBLIC_BACKEND_URL ?? 'http://localhost:8080';
+const BACKEND_URL = import.meta.env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8080';
 
 interface FetchOptions extends RequestInit {
   skipAuth?: boolean;

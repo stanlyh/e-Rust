@@ -1,0 +1,173 @@
+---
+import PageShell from '../../components/layout/PageShell.astro';
+---
+<PageShell title="Usuarios">
+  <div class="max-w-lg">
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold text-gray-900">Crear usuario</h2>
+      <p class="text-sm text-gray-500 mt-1">Solo los administradores pueden crear nuevos usuarios.</p>
+    </div>
+
+    <!-- Mensaje de feedback -->
+    <div id="feedback" class="hidden mb-5 px-4 py-3 rounded-xl text-sm border"></div>
+
+    <form id="user-form" class="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+        <input type="text" name="full_name" required minlength="2" maxlength="150"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Juan Perez" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input type="email" name="email" required
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="usuario@empresa.com" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+        <select name="role"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="sales_agent">Agente de ventas</option>
+          <option value="manager">Manager</option>
+          <option value="admin">Administrador</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          Telefono <span class="text-gray-400">(opcional)</span>
+        </label>
+        <input type="tel" name="phone" maxlength="30"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="+54 11 1234-5678" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Contrasena</label>
+        <div class="relative">
+          <input type="password" name="password" id="password-input" required minlength="8"
+            class="w-full border border-gray-300 rounded-lg pl-3 pr-10 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Minimo 8 caracteres" />
+          <button type="button" id="toggle-password"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="submit-btn"
+        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        <span id="btn-text">Crear usuario</span>
+        <svg id="btn-spinner" xmlns="http://www.w3.org/2000/svg" class="hidden w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" stroke-opacity="0.25"/>
+          <path d="M21 12a9 9 0 0 1-9 9" />
+        </svg>
+      </button>
+
+    </form>
+  </div>
+
+  <script>
+    // Verificar que el usuario es admin antes de mostrar el formulario
+    async function checkAdmin() {
+      const token = sessionStorage.getItem('access_token');
+      if (!token) {
+        const refreshed = await fetch('/api/auth/refresh', { method: 'POST' });
+        if (!refreshed.ok) { window.location.href = '/login'; return null; }
+        const data = await refreshed.json();
+        sessionStorage.setItem('access_token', data.access_token);
+        return data;
+      }
+      // Decodificar payload del JWT para leer el rol
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload;
+    }
+
+    checkAdmin().then(payload => {
+      if (!payload) return;
+      if (payload.role !== 'admin') {
+        window.location.href = '/calendar';
+      }
+    });
+
+    const form = document.getElementById('user-form') as HTMLFormElement;
+    const feedback = document.getElementById('feedback') as HTMLDivElement;
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const btnText = document.getElementById('btn-text') as HTMLSpanElement;
+    const btnSpinner = document.getElementById('btn-spinner') as SVGElement;
+    const togglePassword = document.getElementById('toggle-password') as HTMLButtonElement;
+    const passwordInput = document.getElementById('password-input') as HTMLInputElement;
+
+    togglePassword.addEventListener('click', () => {
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    });
+
+    function showFeedback(msg: string, ok: boolean) {
+      feedback.textContent = msg;
+      feedback.className = ok
+        ? 'mb-5 px-4 py-3 rounded-xl text-sm border bg-green-50 border-green-200 text-green-700'
+        : 'mb-5 px-4 py-3 rounded-xl text-sm border bg-red-50 border-red-200 text-red-700';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      feedback.className = 'hidden';
+      submitBtn.disabled = true;
+      btnText.textContent = 'Creando...';
+      btnSpinner.classList.remove('hidden');
+
+      const fd = new FormData(form);
+      const phone = (fd.get('phone') as string).trim();
+      const body: Record<string, unknown> = {
+        full_name: fd.get('full_name'),
+        email: fd.get('email'),
+        password: fd.get('password'),
+        role: fd.get('role'),
+      };
+      if (phone) body.phone = phone;
+
+      try {
+        let token = sessionStorage.getItem('access_token');
+        if (!token) {
+          const r = await fetch('/api/auth/refresh', { method: 'POST' });
+          if (!r.ok) { window.location.href = '/login'; return; }
+          const d = await r.json();
+          token = d.access_token;
+          sessionStorage.setItem('access_token', token!);
+        }
+
+        const backendUrl = (import.meta as any).env?.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8080';
+        const res = await fetch(`${backendUrl}/api/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: 'Error del servidor' }));
+          showFeedback(err.error ?? 'Error al crear el usuario', false);
+          return;
+        }
+
+        const user = await res.json();
+        showFeedback(`Usuario "${user.full_name}" creado correctamente.`, true);
+        form.reset();
+      } catch {
+        showFeedback('Error de conexion. Intenta de nuevo.', false);
+      } finally {
+        submitBtn.disabled = false;
+        btnText.textContent = 'Crear usuario';
+        btnSpinner.classList.add('hidden');
+      }
+    });
+  </script>
+</PageShell>

@@ -9,6 +9,10 @@ const navItems = [
   { href: '/vehicles',    label: 'Vehiculos',     icon: '🚗' },
   { href: '/reports',     label: 'Reportes',      icon: '📈' },
 ];
+
+const adminItems = [
+  { href: '/admin/users', label: 'Usuarios',       icon: '👤' },
+];
 ---
 
 <aside
@@ -42,7 +46,36 @@ const navItems = [
         <span>{item.label}</span>
       </a>
     ))}
+
+    <div id="admin-nav" class="hidden pt-2 border-t border-gray-100 mt-2 space-y-1">
+      {adminItems.map(item => (
+        <a
+          href={item.href}
+          class={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+            currentPath.startsWith(item.href)
+              ? 'bg-blue-50 text-blue-700'
+              : 'text-gray-600 hover:bg-gray-100'
+          }`}
+        >
+          <span>{item.icon}</span>
+          <span>{item.label}</span>
+        </a>
+      ))}
+    </div>
   </nav>
+
+  <script>
+    // Mostrar items de admin si el token tiene role=admin
+    const token = sessionStorage.getItem('access_token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.role === 'admin') {
+          document.getElementById('admin-nav')?.classList.remove('hidden');
+        }
+      } catch {}
+    }
+  </script>
 
   <div class="p-3 border-t border-gray-200">
     <form action="/api/auth/logout" method="POST">

@@ -3,7 +3,8 @@ import type { APIRoute } from 'astro';
 export const POST: APIRoute = async ({ request, cookies }) => {
   const body = await request.json();
 
-  const res = await fetch(`${import.meta.env.BACKEND_URL}/api/auth/login`, {
+  const backendUrl = import.meta.env.BACKEND_URL ?? 'http://127.0.0.1:8080';
+  const res = await fetch(`${backendUrl}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

@@ -4,7 +4,8 @@ export const POST: APIRoute = async ({ cookies }) => {
   const refreshToken = cookies.get('refresh_token')?.value;
 
   if (refreshToken) {
-    await fetch(`${import.meta.env.BACKEND_URL}/api/auth/logout`, {
+    const backendUrl = import.meta.env.BACKEND_URL ?? 'http://127.0.0.1:8080';
+    await fetch(`${backendUrl}/api/auth/logout`, {
       method: 'POST',
       headers: { Cookie: `refresh_token=${refreshToken}` },
     }).catch(() => {});

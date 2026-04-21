@@ -7,7 +7,8 @@ export const POST: APIRoute = async ({ cookies }) => {
     return new Response(JSON.stringify({ error: 'No hay sesion activa' }), { status: 401 });
   }
 
-  const res = await fetch(`${import.meta.env.BACKEND_URL}/api/auth/refresh`, {
+  const backendUrl = import.meta.env.BACKEND_URL ?? 'http://127.0.0.1:8080';
+  const res = await fetch(`${backendUrl}/api/auth/refresh`, {
     method: 'POST',
     headers: { Cookie: `refresh_token=${refreshToken}` },
   });
