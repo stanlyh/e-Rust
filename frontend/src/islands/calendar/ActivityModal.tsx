@@ -73,11 +73,16 @@ export default function ActivityModal({ activity, defaultDate, onClose, onSaved 
 
   const onSubmit = async (data: FormData) => {
     try {
+      const payload = {
+        ...data,
+        scheduled_start: new Date(data.scheduled_start).toISOString(),
+        scheduled_end: new Date(data.scheduled_end).toISOString(),
+      };
       if (activity) {
-        await activitiesApi.update(activity.id, data);
+        await activitiesApi.update(activity.id, payload);
         toast.success('Actividad actualizada');
       } else {
-        await activitiesApi.create(data);
+        await activitiesApi.create(payload);
         toast.success('Actividad creada');
       }
       onSaved();

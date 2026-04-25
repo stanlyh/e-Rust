@@ -27,24 +27,33 @@ export function clearAuth() {
   $authUser.set(null);
 }
 
+let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+let refreshPromise: Promise<boolean> | null = null;
+
 export async function initAuth(): Promise<boolean> {
-  try {
-    const res = await fetch('/api/auth/refresh', { method: 'POST' });
-    if (!res.ok) {
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
+    try {
+      const res = await fetch('/api/auth/refresh', { method: 'POST' });
+      if (!res.ok) {
+        $authLoading.set(false);
+        return false;
+      }
+      const { access_token, user } = await res.json();
+      setAuth(access_token, user);
+      scheduleRefresh();
+      return true;
+    } catch {
       $authLoading.set(false);
       return false;
+    } finally {
+      refreshPromise = null;
     }
-    const { access_token, user } = await res.json();
-    setAuth(access_token, user);
-    scheduleRefresh();
-    return true;
-  } catch {
-    $authLoading.set(false);
-    return false;
-  }
-}
+  })();
 
-let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+  return refreshPromise;
+}
 
 export function scheduleRefresh() {
   if (refreshTimer) clearTimeout(refreshTimer);

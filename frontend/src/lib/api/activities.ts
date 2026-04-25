@@ -66,29 +66,29 @@ export interface ActivityComplete {
 
 export const activitiesApi = {
   calendar: (from: string, to: string) =>
-    api.get<CalendarResponse>(`/api/v1/calendar?from=${from}&to=${to}`),
+    api.get<CalendarResponse>(`/api/calendar?from=${from}&to=${to}`),
 
   upcoming: () =>
-    api.get<Activity[]>('/api/v1/activities/upcoming'),
+    api.get<Activity[]>('/api/activities/upcoming'),
 
   overdue: () =>
-    api.get<Activity[]>('/api/v1/activities/overdue'),
+    api.get<Activity[]>('/api/activities/overdue'),
 
   getById: (id: string) =>
-    api.get<Activity>(`/api/v1/activities/${id}`),
+    api.get<Activity>(`/api/activities/${id}`),
 
   create: (data: ActivityCreate) =>
-    api.post<Activity>('/api/v1/activities', data),
+    api.post<Activity>('/api/activities', data),
 
   update: (id: string, data: Partial<ActivityCreate>) =>
-    api.put<Activity>(`/api/v1/activities/${id}`, data),
+    api.put<Activity>(`/api/activities/${id}`, data),
 
   complete: (id: string, data: ActivityComplete) =>
-    api.patch<Activity>(`/api/v1/activities/${id}/complete`, data),
+    api.patch<Activity>(`/api/activities/${id}/complete`, data),
 
   reschedule: (id: string, start: string, end: string) =>
-    api.patch<Activity>(`/api/v1/activities/${id}/reschedule`, { scheduled_start: start, scheduled_end: end }),
+    api.patch<Activity>(`/api/activities/${id}/reschedule`, { scheduled_start: start, scheduled_end: end }),
 
   delete: (id: string) =>
-    api.delete<void>(`/api/v1/activities/${id}`),
+    api.delete<void>(`/api/activities/${id}`),
 };
