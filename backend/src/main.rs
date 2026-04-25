@@ -44,19 +44,34 @@ async fn main() -> Result<()> {
         .allow_methods(Any)
         .allow_headers(Any);
 
-    let app = all_routes(state)
-        .layer(TraceLayer::new_for_http())
-        .layer(cors);
+    let make_app = || {
+        all_routes(state.clone())
+            .layer(TraceLayer::new_for_http())
+            .layer(cors.clone())
+    };
 
-    let addr = SocketAddr::from((
-        config.host.parse::<std::net::IpAddr>()?,
-        config.port,
-    ));
+    let addr_v4: SocketAddr = format!("0.0.0.0:{}", config.port).parse()?;
+    let addr_v6: SocketAddr = format!("[::]:{}", config.port).parse()?;
 
-    tracing::info!("Servidor escuchando en http://{}", addr);
+    let listener_v4 = tokio::net::TcpListener::bind(addr_v4).await?;
 
-    let listener = tokio::net::TcpListener::bind(addr).await?;
-    axum::serve(listener, app).await?;
+    // Escucha en IPv6 si el sistema lo soporta (permite que `localhost` resuelva a ::1)
+    let listener_v6 = tokio::net::TcpListener::bind(addr_v6).await.ok();
+
+    tracing::info!("Servidor escuchando en http://0.0.0.0:{}", config.port);
+    if listener_v6.is_some() {
+        tracing::info!("Soporte IPv6 activo en [::]:{}", config.port);
+    }
+
+    match listener_v6 {
+        Some(v6) => {
+            tokio::select! {
+                res = axum::serve(listener_v4, make_app()) => res?,
+                res = axum::serve(v6, make_app()) => res?,
+            }
+        }
+        None => axum::serve(listener_v4, make_app()).await?,
+    }
 
     Ok(())
 }
