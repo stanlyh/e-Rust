@@ -32,9 +32,10 @@ export default function ClientForm() {
       });
       toast.success('Cliente creado correctamente');
       window.location.href = `/clients/${client.id}`;
-    } catch {
-      toast.error('Error al crear el cliente');
-      setError('root', { message: 'Error al crear el cliente.' });
+    } catch (err: any) {
+      const msg = err?.data?.error ?? err?.message ?? 'Error al crear el cliente.';
+      toast.error(msg);
+      setError('root', { message: msg });
     }
   };
 

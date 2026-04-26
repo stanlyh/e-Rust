@@ -130,6 +130,27 @@ pub struct VehicleCreate {
     pub features: Option<Value>,
 }
 
+#[derive(Debug, Deserialize, Validate)]
+pub struct VehicleUpdate {
+    pub vin: Option<String>,
+    pub stock_number: Option<String>,
+    #[validate(length(min = 1, max = 100))]
+    pub make: Option<String>,
+    #[validate(length(min = 1, max = 100))]
+    pub model: Option<String>,
+    pub year: Option<i16>,
+    pub trim: Option<String>,
+    pub color_exterior: Option<String>,
+    pub color_interior: Option<String>,
+    pub fuel_type: Option<FuelType>,
+    pub transmission: Option<TransmissionType>,
+    pub mileage: Option<i32>,
+    pub condition: Option<VehicleCondition>,
+    #[validate(range(min = 0.0))]
+    pub list_price: Option<f64>,
+    pub description: Option<String>,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct VehicleFilters {
     pub make: Option<String>,

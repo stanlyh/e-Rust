@@ -65,6 +65,7 @@ export const vehiclesApi = {
   },
   getById: (id: string) => api.get<Vehicle>(`/api/vehicles/${id}`),
   create: (data: VehicleCreate) => api.post<Vehicle>('/api/vehicles', data),
+  update: (id: string, data: Partial<VehicleCreate>) => api.put<Vehicle>(`/api/vehicles/${id}`, data),
   setAvailability: (id: string, available: boolean) =>
     api.patch<Vehicle>(`/api/vehicles/${id}/availability`, { available }),
   delete: (id: string) => api.delete<void>(`/api/vehicles/${id}`),

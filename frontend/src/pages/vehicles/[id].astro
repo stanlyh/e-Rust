@@ -1,0 +1,177 @@
+---
+import PageShell from '../../components/layout/PageShell.astro';
+---
+<PageShell title="Detalle de Vehiculo">
+  <div class="mb-4">
+    <a href="/vehicles" class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+      </svg>
+      Volver a Vehiculos
+    </a>
+  </div>
+
+  <div id="vehicle-detail" class="max-w-3xl">
+    <!-- Skeleton -->
+    <div class="bg-white rounded-xl border border-gray-200 p-6 animate-pulse space-y-4">
+      <div class="h-7 bg-gray-100 rounded w-1/2"></div>
+      <div class="h-4 bg-gray-100 rounded w-1/4"></div>
+      <div class="grid grid-cols-2 gap-4 mt-4">
+        <div class="h-4 bg-gray-100 rounded"></div>
+        <div class="h-4 bg-gray-100 rounded"></div>
+        <div class="h-4 bg-gray-100 rounded"></div>
+        <div class="h-4 bg-gray-100 rounded"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { vehiclesApi, CONDITION_LABELS, FUEL_LABELS } from '../../lib/api/vehicles';
+    import { initAuth } from '../../lib/auth/store';
+
+    const TRANSMISSION_LABELS: Record<string, string> = {
+      manual: 'Manual',
+      automatic: 'Automatica',
+      cvt: 'CVT',
+    };
+
+    const CONDITION_COLORS: Record<string, string> = {
+      new: 'bg-green-100 text-green-700',
+      used: 'bg-gray-100 text-gray-600',
+      certified_used: 'bg-blue-100 text-blue-700',
+    };
+
+    const id = window.location.pathname.split('/').pop()!;
+    await initAuth();
+
+    const container = document.getElementById('vehicle-detail')!;
+
+    try {
+      const v = await vehiclesApi.getById(id);
+
+      const price = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(Number(v.list_price));
+      const condLabel = CONDITION_LABELS[v.condition] ?? v.condition;
+      const condColor = CONDITION_COLORS[v.condition] ?? 'bg-gray-100 text-gray-600';
+      const mileage = v.mileage?.toLocaleString('es-MX') ?? '0';
+
+      const featuresHtml = Object.keys(v.features ?? {}).length
+        ? `<div>
+            <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide font-semibold">Caracteristicas</p>
+            <div class="flex flex-wrap gap-2">
+              ${Object.entries(v.features).map(([k, val]) =>
+                `<span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">${val ?? k}</span>`
+              ).join('')}
+            </div>
+          </div>`
+        : '';
+
+      container.innerHTML = `
+        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          <!-- Header -->
+          <div class="p-6 border-b border-gray-100">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h2 class="text-xl font-bold text-gray-900">${v.year} ${v.make} ${v.model}${v.trim ? ' ' + v.trim : ''}</h2>
+                <p class="text-2xl font-bold text-blue-600 mt-1">${price}</p>
+              </div>
+              <div class="flex flex-col items-end gap-2 shrink-0">
+                <span class="text-xs px-2.5 py-1 rounded-full font-medium ${condColor}">${condLabel}</span>
+                <span class="text-xs px-2.5 py-1 rounded-full font-medium ${v.is_available ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'}">
+                  ${v.is_available ? 'Disponible' : 'No disponible'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grid de datos -->
+          <div class="p-6 grid grid-cols-2 md:grid-cols-3 gap-5 border-b border-gray-100">
+            ${v.vin ? `
+            <div>
+              <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">VIN</p>
+              <p class="text-sm font-mono text-gray-800 mt-0.5">${v.vin}</p>
+            </div>` : ''}
+
+            ${v.stock_number ? `
+            <div>
+              <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Stock #</p>
+              <p class="text-sm text-gray-800 mt-0.5">${v.stock_number}</p>
+            </div>` : ''}
+
+            <div>
+              <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Combustible</p>
+              <p class="text-sm text-gray-800 mt-0.5">${FUEL_LABELS[v.fuel_type] ?? v.fuel_type}</p>
+            </div>
+
+            <div>
+              <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Transmision</p>
+              <p class="text-sm text-gray-800 mt-0.5">${TRANSMISSION_LABELS[v.transmission] ?? v.transmission}</p>
+            </div>
+
+            <div>
+              <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Kilometraje</p>
+              <p class="text-sm text-gray-800 mt-0.5">${mileage} km</p>
+            </div>
+
+            ${v.color_exterior ? `
+            <div>
+              <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Color exterior</p>
+              <p class="text-sm text-gray-800 mt-0.5">${v.color_exterior}</p>
+            </div>` : ''}
+
+            ${v.color_interior ? `
+            <div>
+              <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Color interior</p>
+              <p class="text-sm text-gray-800 mt-0.5">${v.color_interior}</p>
+            </div>` : ''}
+
+            <div>
+              <p class="text-xs text-gray-400 uppercase tracking-wide font-medium">Registrado</p>
+              <p class="text-sm text-gray-800 mt-0.5">${new Date(v.created_at).toLocaleDateString('es-MX')}</p>
+            </div>
+          </div>
+
+          <!-- Descripcion y caracteristicas -->
+          <div class="p-6 space-y-5">
+            ${v.description ? `
+            <div>
+              <p class="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1.5">Descripcion</p>
+              <p class="text-sm text-gray-700 leading-relaxed">${v.description}</p>
+            </div>` : ''}
+
+            ${featuresHtml}
+
+            <!-- Acciones -->
+            <div class="flex gap-3 pt-2">
+              <button
+                onclick="toggleAvailability('${v.id}', ${v.is_available})"
+                class="flex-1 py-2 text-sm font-medium rounded-lg border transition-colors ${v.is_available
+                  ? 'border-red-200 text-red-600 hover:bg-red-50'
+                  : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'}"
+              >
+                ${v.is_available ? 'Marcar no disponible' : 'Marcar disponible'}
+              </button>
+              <a href="/vehicles/edit/${v.id}"
+                class="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                Editar
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    } catch {
+      container.innerHTML = `
+        <div class="bg-white rounded-xl border border-red-200 p-6 text-center">
+          <p class="text-red-500 text-sm font-medium">No se pudo cargar el vehiculo</p>
+          <a href="/vehicles" class="text-sm text-gray-500 hover:text-blue-600 mt-2 inline-block">Volver al listado</a>
+        </div>`;
+    }
+
+    async function toggleAvailability(id: string, currentlyAvailable: boolean) {
+      const { vehiclesApi } = await import('../../lib/api/vehicles');
+      await vehiclesApi.setAvailability(id, !currentlyAvailable);
+      window.location.reload();
+    }
+
+    (window as any).toggleAvailability = toggleAvailability;
+  </script>
+</PageShell>

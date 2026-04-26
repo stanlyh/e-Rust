@@ -1,0 +1,148 @@
+---
+import PageShell from '../../../components/layout/PageShell.astro';
+---
+<PageShell title="Editar Lead">
+  <div class="max-w-xl">
+    <div class="mb-6">
+      <a href="/leads" class="text-sm text-gray-500 hover:text-blue-600">← Volver a Leads</a>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+      <div id="form-skeleton" class="animate-pulse space-y-4">
+        <div class="grid grid-cols-2 gap-4"><div class="h-9 bg-gray-100 rounded"></div><div class="h-9 bg-gray-100 rounded"></div></div>
+        <div class="grid grid-cols-3 gap-4"><div class="h-9 bg-gray-100 rounded"></div><div class="h-9 bg-gray-100 rounded"></div><div class="h-9 bg-gray-100 rounded"></div></div>
+        <div class="h-20 bg-gray-100 rounded"></div>
+      </div>
+
+      <form id="lead-form" class="hidden space-y-5">
+        <div id="error-msg" class="hidden bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg"></div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Origen</label>
+            <select name="source" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+              <option value="web">Sitio web</option>
+              <option value="referral">Referido</option>
+              <option value="walk_in">Visita directa</option>
+              <option value="phone">Telefono</option>
+              <option value="social_media">Redes sociales</option>
+              <option value="other">Otro</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+            <select name="status" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+              <option value="new">Nuevo</option>
+              <option value="contacted">Contactado</option>
+              <option value="qualified">Calificado</option>
+              <option value="unqualified">No calificado</option>
+              <option value="converted">Convertido</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Marca de interes</label>
+            <input name="interest_make" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Toyota">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Modelo de interes</label>
+            <input name="interest_model" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="Hilux">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Año de interes</label>
+            <input name="interest_year" type="number" min="1990" max="2030" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Presupuesto min</label>
+            <input name="budget_min" type="number" min="0" step="1000" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Presupuesto max</label>
+            <input name="budget_max" type="number" min="0" step="1000" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Notas</label>
+          <textarea name="notes" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-none"></textarea>
+        </div>
+
+        <div class="flex gap-3">
+          <a id="back-link" href="/leads" class="flex-1 text-center border border-gray-300 text-gray-700 text-sm font-medium py-2 rounded-lg hover:bg-gray-50">Cancelar</a>
+          <button type="submit" id="submit-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg disabled:opacity-50">
+            Guardar cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    import { leadsApi } from '../../../lib/api/leads';
+    import { initAuth } from '../../../lib/auth/store';
+
+    const id = window.location.pathname.split('/').filter(Boolean).pop()!;
+    await initAuth();
+
+    const skeleton = document.getElementById('form-skeleton')!;
+    const form = document.getElementById('lead-form') as HTMLFormElement;
+    const errorMsg = document.getElementById('error-msg') as HTMLDivElement;
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+    document.getElementById('back-link')!.setAttribute('href', `/leads/${id}`);
+
+    function setField(name: string, value: string | number | undefined | null) {
+      const el = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null;
+      if (el && value !== undefined && value !== null) el.value = String(value);
+    }
+
+    try {
+      const l = await leadsApi.getById(id);
+      skeleton.classList.add('hidden');
+      form.classList.remove('hidden');
+
+      setField('source', l.source);
+      setField('status', l.status);
+      setField('interest_make', l.interest_make);
+      setField('interest_model', l.interest_model);
+      setField('interest_year', l.interest_year);
+      setField('budget_min', l.budget_min);
+      setField('budget_max', l.budget_max);
+      setField('notes', l.notes);
+    } catch {
+      skeleton.innerHTML = '<p class="text-red-500 text-sm">No se pudo cargar el lead.</p>';
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      errorMsg.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Guardando...';
+
+      const fd = new FormData(form);
+      try {
+        await leadsApi.update(id, {
+          source: fd.get('source') as any,
+          status: fd.get('status') as any,
+          interest_make: (fd.get('interest_make') as string) || undefined,
+          interest_model: (fd.get('interest_model') as string) || undefined,
+          interest_year: fd.get('interest_year') ? Number(fd.get('interest_year')) : undefined,
+          budget_min: fd.get('budget_min') ? Number(fd.get('budget_min')) : undefined,
+          budget_max: fd.get('budget_max') ? Number(fd.get('budget_max')) : undefined,
+          notes: (fd.get('notes') as string) || undefined,
+        });
+        window.location.href = `/leads/${id}`;
+      } catch (err: any) {
+        const msg = err?.data?.error ?? err?.message ?? 'Error al actualizar el lead.';
+        errorMsg.textContent = msg;
+        errorMsg.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Guardar cambios';
+      }
+    });
+  </script>
+</PageShell>

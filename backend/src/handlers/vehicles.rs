@@ -13,7 +13,7 @@ use crate::{
     middleware::auth::AuthUser,
     models::{
         common::PaginatedResponse,
-        vehicle::{VehicleCreate, VehicleFilters, VehicleResponse},
+        vehicle::{VehicleCreate, VehicleFilters, VehicleResponse, VehicleUpdate},
     },
     repositories::vehicle_repo::VehicleRepo,
     state::AppState,
@@ -53,6 +53,22 @@ pub async fn create(
     req.validate().map_err(|e| AppError::ValidationError(e.to_string()))?;
     let row = VehicleRepo::create(&state.db, &req).await?;
     Ok((StatusCode::CREATED, Json(VehicleResponse::from(row))))
+}
+
+pub async fn update(
+    AuthUser(claims): AuthUser,
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+    Json(req): Json<VehicleUpdate>,
+) -> AppResult<Json<VehicleResponse>> {
+    if !matches!(claims.role.as_str(), "admin" | "manager") {
+        return Err(AppError::Forbidden);
+    }
+    req.validate().map_err(|e| AppError::ValidationError(e.to_string()))?;
+    let row = VehicleRepo::update(&state.db, id, &req)
+        .await?
+        .ok_or_else(|| AppError::NotFound("Vehiculo".to_string()))?;
+    Ok(Json(VehicleResponse::from(row)))
 }
 
 #[derive(Deserialize)]

@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use crate::{
     error::AppResult,
-    models::vehicle::{VehicleCreate, VehicleFilters, VehicleRow},
+    models::vehicle::{VehicleCreate, VehicleFilters, VehicleRow, VehicleUpdate},
 };
 
 pub struct VehicleRepo;
@@ -133,6 +133,55 @@ impl VehicleRepo {
             req.features.clone().unwrap_or(serde_json::json!({})),
         )
         .fetch_one(pool)
+        .await?;
+        Ok(row)
+    }
+
+    pub async fn update(
+        pool: &PgPool,
+        id: Uuid,
+        req: &VehicleUpdate,
+    ) -> AppResult<Option<VehicleRow>> {
+        let row = sqlx::query_as!(
+            VehicleRow,
+            r#"
+            UPDATE vehicles SET
+                vin            = COALESCE($2, vin),
+                stock_number   = COALESCE($3, stock_number),
+                make           = COALESCE($4, make),
+                model          = COALESCE($5, model),
+                year           = COALESCE($6, year),
+                trim           = COALESCE($7, trim),
+                color_exterior = COALESCE($8, color_exterior),
+                color_interior = COALESCE($9, color_interior),
+                fuel_type      = COALESCE($10, fuel_type),
+                transmission   = COALESCE($11, transmission),
+                mileage        = COALESCE($12, mileage),
+                condition      = COALESCE($13, condition),
+                list_price     = COALESCE($14, list_price),
+                description    = COALESCE($15, description),
+                updated_at     = NOW()
+            WHERE id = $1
+            RETURNING id, vin, stock_number, make, model, year, trim,
+                      color_exterior, color_interior,
+                      fuel_type AS "fuel_type: _",
+                      transmission AS "transmission: _",
+                      mileage, condition AS "condition: _",
+                      list_price, cost_price, is_available,
+                      description, images, features,
+                      created_at, updated_at
+            "#,
+            id,
+            req.vin, req.stock_number, req.make, req.model, req.year, req.trim,
+            req.color_exterior, req.color_interior,
+            req.fuel_type as _,
+            req.transmission as _,
+            req.mileage,
+            req.condition as _,
+            req.list_price.map(|v| sqlx::types::BigDecimal::from(v as i64)),
+            req.description,
+        )
+        .fetch_optional(pool)
         .await?;
         Ok(row)
     }

@@ -40,6 +40,22 @@ impl IntoResponse for AppError {
             AppError::Conflict(msg) => (StatusCode::CONFLICT, msg.clone()),
             AppError::Database(e) => {
                 tracing::error!("Database error: {e}");
+                // Unique constraint violation (PG code 23505)
+                if let sqlx::Error::Database(db_err) = e {
+                    if db_err.code().as_deref() == Some("23505") {
+                        let detail = db_err.message();
+                        let field = if detail.contains("stock_number") {
+                            "El numero de stock ya esta registrado"
+                        } else if detail.contains("vin") {
+                            "El VIN ya esta registrado"
+                        } else if detail.contains("email") {
+                            "El email ya esta registrado"
+                        } else {
+                            "Ya existe un registro con esos datos"
+                        };
+                        return (StatusCode::CONFLICT, Json(json!({ "error": field }))).into_response();
+                    }
+                }
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
                     "Error de base de datos".to_string(),
