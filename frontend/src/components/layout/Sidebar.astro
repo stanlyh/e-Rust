@@ -36,22 +36,63 @@ const adminItems = [
 ];
 ---
 
+<style>
+  @media (min-width: 768px) {
+    #sidebar[data-collapsed="true"] {
+      width: 3.5rem;
+    }
+    #sidebar[data-collapsed="true"] .sb-label,
+    #sidebar[data-collapsed="true"] .sb-section {
+      display: none !important;
+    }
+    #sidebar[data-collapsed="true"] nav a,
+    #sidebar[data-collapsed="true"] .sb-logout {
+      justify-content: center;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+    #sidebar[data-collapsed="true"] #user-info {
+      justify-content: center;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+    #sidebar[data-collapsed="true"] #sidebar-header {
+      padding-left: 0;
+      padding-right: 0;
+      justify-content: center;
+      gap: 0;
+    }
+    #sidebar[data-collapsed="true"] #sidebar-logo-text {
+      display: none !important;
+    }
+    #sidebar[data-collapsed="true"] #collapse-icon-expanded {
+      display: none;
+    }
+    #sidebar[data-collapsed="false"] #collapse-icon-collapsed {
+      display: none;
+    }
+  }
+</style>
+
 <aside
   id="sidebar"
+  data-collapsed="false"
   class="fixed inset-y-0 left-0 z-40 w-60 bg-slate-900 flex flex-col shrink-0
          -translate-x-full md:translate-x-0 md:static md:inset-auto md:z-auto
-         transition-transform duration-200 ease-in-out"
+         transition-all duration-200 ease-in-out overflow-hidden"
 >
   <!-- Logo -->
-  <div class="h-16 flex items-center justify-between px-5 border-b border-slate-700/60">
-    <div class="flex items-center gap-2.5">
-      <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+  <div id="sidebar-header" class="h-16 flex items-center justify-between px-3 border-b border-slate-700/60 shrink-0">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/30 shrink-0">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 text-white" viewBox="0 0 24 24" fill="currentColor">
           <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
         </svg>
       </div>
-      <span class="font-bold text-white text-sm tracking-tight">CRM Vehiculos</span>
+      <span id="sidebar-logo-text" class="font-bold text-white text-sm tracking-tight whitespace-nowrap">CRM Vehiculos</span>
     </div>
+
+    <!-- Boton cerrar en movil -->
     <button
       id="sidebar-close"
       class="md:hidden text-slate-400 hover:text-white p-1 rounded transition-colors"
@@ -61,14 +102,31 @@ const adminItems = [
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
       </svg>
     </button>
+
+    <!-- Boton colapsar en desktop -->
+    <button
+      id="sidebar-collapse-btn"
+      class="hidden md:flex items-center justify-center text-slate-400 hover:text-white w-7 h-7 rounded transition-colors shrink-0"
+      aria-label="Colapsar menu"
+    >
+      <!-- Chevron izquierda (expandido) -->
+      <svg id="collapse-icon-expanded" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+      </svg>
+      <!-- Chevron derecha (colapsado) -->
+      <svg id="collapse-icon-collapsed" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
   </div>
 
   <!-- Nav principal -->
-  <nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
-    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">Menu</p>
+  <nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto overflow-x-hidden">
+    <p class="sb-section text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">Menu</p>
     {navItems.map(item => (
       <a
         href={item.href}
+        title={item.label}
         class={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group ${
           currentPath.startsWith(item.href)
             ? 'bg-blue-500/20 text-blue-400 shadow-sm'
@@ -78,19 +136,20 @@ const adminItems = [
         <span class={`shrink-0 ${currentPath.startsWith(item.href) ? 'text-blue-400' : 'text-slate-500 group-hover:text-white'}`}
           set:html={item.icon}
         />
-        <span>{item.label}</span>
+        <span class="sb-label truncate">{item.label}</span>
         {currentPath.startsWith(item.href) && (
-          <span class="ml-auto w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+          <span class="sb-label ml-auto w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
         )}
       </a>
     ))}
 
     <div id="admin-nav" class="hidden pt-3 mt-2">
-      <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">Admin</p>
+      <p class="sb-section text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">Admin</p>
       <div class="space-y-0.5">
         {adminItems.map(item => (
           <a
             href={item.href}
+            title={item.label}
             class={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 group ${
               currentPath.startsWith(item.href)
                 ? 'bg-blue-500/20 text-blue-400'
@@ -100,7 +159,7 @@ const adminItems = [
             <span class={`shrink-0 ${currentPath.startsWith(item.href) ? 'text-blue-400' : 'text-slate-500 group-hover:text-white'}`}
               set:html={item.icon}
             />
-            <span>{item.label}</span>
+            <span class="sb-label">{item.label}</span>
           </a>
         ))}
       </div>
@@ -120,14 +179,14 @@ const adminItems = [
   </script>
 
   <!-- Footer / logout -->
-  <div class="p-3 border-t border-slate-700/60">
+  <div class="p-3 border-t border-slate-700/60 shrink-0">
     <div id="user-info" class="flex items-center gap-3 px-3 py-2 mb-1">
       <div class="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
         </svg>
       </div>
-      <div class="min-w-0">
+      <div class="sb-label min-w-0">
         <p id="user-name" class="text-xs font-semibold text-white truncate">—</p>
         <p id="user-role" class="text-xs text-slate-500 truncate"></p>
       </div>
@@ -135,12 +194,13 @@ const adminItems = [
     <form action="/api/auth/logout" method="POST">
       <button
         type="submit"
-        class="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-all duration-150 group"
+        class="sb-logout w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-all duration-150 group"
+        title="Cerrar sesion"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 group-hover:text-red-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
         </svg>
-        <span>Cerrar sesion</span>
+        <span class="sb-label">Cerrar sesion</span>
       </button>
     </form>
   </div>
@@ -177,4 +237,22 @@ const adminItems = [
   menuBtn?.addEventListener('click', openSidebar);
   closeBtn?.addEventListener('click', closeSidebar);
   overlay?.addEventListener('click', closeSidebar);
+
+  // Colapsar/expandir sidebar en desktop
+  const collapseBtn = document.getElementById('sidebar-collapse-btn');
+
+  function setSidebarCollapsed(collapsed: boolean) {
+    if (!sidebar) return;
+    sidebar.dataset.collapsed = String(collapsed);
+    localStorage.setItem('sidebar-collapsed', String(collapsed));
+  }
+
+  // Restaurar estado desde localStorage sin flash
+  const savedCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+  if (savedCollapsed) setSidebarCollapsed(true);
+
+  collapseBtn?.addEventListener('click', () => {
+    const isCollapsed = sidebar?.dataset.collapsed === 'true';
+    setSidebarCollapsed(!isCollapsed);
+  });
 </script>
