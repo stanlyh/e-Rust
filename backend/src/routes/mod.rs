@@ -6,6 +6,7 @@ pub mod opportunities;
 pub mod vehicles;
 
 use axum::{routing::get, Router};
+use tower_http::services::ServeDir;
 use crate::{handlers::{calendar, dashboard}, state::AppState};
 
 pub fn all_routes(state: AppState) -> Router {
@@ -18,5 +19,6 @@ pub fn all_routes(state: AppState) -> Router {
         .nest("/api/leads",         leads::router())
         .nest("/api/opportunities", opportunities::router())
         .nest("/api/dashboard",     Router::new().route("/", get(dashboard::report)))
+        .nest_service("/uploads",   ServeDir::new("uploads"))
         .with_state(state)
 }

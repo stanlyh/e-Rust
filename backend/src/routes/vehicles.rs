@@ -1,4 +1,5 @@
 use axum::{
+    extract::DefaultBodyLimit,
     routing::{delete, get, patch, post, put},
     Router,
 };
@@ -12,4 +13,9 @@ pub fn router() -> Router<AppState> {
                         .put(vehicles::update)
                         .delete(vehicles::delete))
         .route("/{id}/availability", patch(vehicles::set_availability))
+        .route(
+            "/{id}/images",
+            post(vehicles::upload_image).layer(DefaultBodyLimit::max(10 * 1024 * 1024)),
+        )
+        .route("/{id}/images/{filename}", delete(vehicles::delete_image))
 }

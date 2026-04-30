@@ -1,6 +1,6 @@
 import { $accessToken, initAuth, scheduleRefresh } from '../auth/store';
 
-const BACKEND_URL = import.meta.env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8080';
+export const BACKEND_URL = import.meta.env.PUBLIC_BACKEND_URL ?? 'http://127.0.0.1:8080';
 
 interface FetchOptions extends RequestInit {
   skipAuth?: boolean;
@@ -20,8 +20,9 @@ export class APIError extends Error {
 async function apiFetch<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
   const { skipAuth = false, ...fetchOptions } = options;
 
+  const isFormData = fetchOptions.body instanceof FormData;
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...(fetchOptions.headers as Record<string, string>),
   };
 
@@ -70,4 +71,6 @@ export const api = {
   patch:  <T>(ep: string, body: unknown, opts?: FetchOptions) =>
     apiFetch<T>(ep, { ...opts, method: 'PATCH', body: JSON.stringify(body) }),
   delete: <T>(ep: string, opts?: FetchOptions) => apiFetch<T>(ep, { ...opts, method: 'DELETE' }),
+  postForm: <T>(ep: string, body: FormData, opts?: FetchOptions) =>
+    apiFetch<T>(ep, { ...opts, method: 'POST', body }),
 };

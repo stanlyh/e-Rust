@@ -1,4 +1,4 @@
-import { api } from './client';
+import { api, BACKEND_URL } from './client';
 import type { PaginatedResponse } from './leads';
 
 export type FuelType = 'gasoline' | 'diesel' | 'hybrid' | 'electric' | 'other';
@@ -58,6 +58,10 @@ export const FUEL_LABELS: Record<FuelType, string> = {
   other: 'Otro',
 };
 
+export function vehicleImageUrl(path: string): string {
+  return `${BACKEND_URL}${path}`;
+}
+
 export const vehiclesApi = {
   list: (params?: Record<string, string>) => {
     const qs = params ? '?' + new URLSearchParams(params).toString() : '';
@@ -69,4 +73,11 @@ export const vehiclesApi = {
   setAvailability: (id: string, available: boolean) =>
     api.patch<Vehicle>(`/api/vehicles/${id}/availability`, { available }),
   delete: (id: string) => api.delete<void>(`/api/vehicles/${id}`),
+  uploadImage: (id: string, file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return api.postForm<Vehicle>(`/api/vehicles/${id}/images`, formData);
+  },
+  deleteImage: (id: string, filename: string) =>
+    api.delete<Vehicle>(`/api/vehicles/${id}/images/${filename}`),
 };

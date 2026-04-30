@@ -211,6 +211,71 @@ impl VehicleRepo {
         Ok(row)
     }
 
+    pub async fn add_image(pool: &PgPool, id: Uuid, url: &str) -> AppResult<Option<VehicleRow>> {
+        let vehicle = Self::find_by_id(pool, id).await?;
+        let Some(v) = vehicle else { return Ok(None) };
+
+        let mut arr = v.images.as_array().cloned().unwrap_or_default();
+        arr.push(serde_json::json!(url));
+        let images = serde_json::Value::Array(arr);
+
+        let row = sqlx::query_as!(
+            VehicleRow,
+            r#"
+            UPDATE vehicles SET images = $2, updated_at = NOW()
+            WHERE id = $1
+            RETURNING id, vin, stock_number, make, model, year, trim,
+                      color_exterior, color_interior,
+                      fuel_type AS "fuel_type: _",
+                      transmission AS "transmission: _",
+                      mileage, condition AS "condition: _",
+                      list_price, cost_price, is_available,
+                      description, images, features,
+                      created_at, updated_at
+            "#,
+            id,
+            images
+        )
+        .fetch_optional(pool)
+        .await?;
+        Ok(row)
+    }
+
+    pub async fn remove_image(pool: &PgPool, id: Uuid, url: &str) -> AppResult<Option<VehicleRow>> {
+        let vehicle = Self::find_by_id(pool, id).await?;
+        let Some(v) = vehicle else { return Ok(None) };
+
+        let arr: Vec<serde_json::Value> = v.images
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .into_iter()
+            .filter(|val| val.as_str() != Some(url))
+            .collect();
+        let images = serde_json::Value::Array(arr);
+
+        let row = sqlx::query_as!(
+            VehicleRow,
+            r#"
+            UPDATE vehicles SET images = $2, updated_at = NOW()
+            WHERE id = $1
+            RETURNING id, vin, stock_number, make, model, year, trim,
+                      color_exterior, color_interior,
+                      fuel_type AS "fuel_type: _",
+                      transmission AS "transmission: _",
+                      mileage, condition AS "condition: _",
+                      list_price, cost_price, is_available,
+                      description, images, features,
+                      created_at, updated_at
+            "#,
+            id,
+            images
+        )
+        .fetch_optional(pool)
+        .await?;
+        Ok(row)
+    }
+
     pub async fn delete(pool: &PgPool, id: Uuid) -> AppResult<bool> {
         let result = sqlx::query!("DELETE FROM vehicles WHERE id = $1", id)
             .execute(pool)
