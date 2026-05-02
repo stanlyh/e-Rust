@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "pnpm --filter frontend dev",
-    "dev:backend": "cargo watch -x 'run --bin crm-backend' -w backend/src",
+    "dev:backend": "cargo watch -x \"run --bin crm-backend\" -w backend/src",
     "dev:all": "concurrently \"pnpm dev:backend\" \"pnpm dev\"",
     "build": "pnpm --filter frontend build",
     "preview": "pnpm --filter frontend preview",
@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "concurrently": "^9.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "sharp"]
   }
 }
