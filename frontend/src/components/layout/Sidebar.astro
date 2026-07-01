@@ -238,6 +238,15 @@ const adminItems = [
   closeBtn?.addEventListener('click', closeSidebar);
   overlay?.addEventListener('click', closeSidebar);
 
+  // Logout
+  const logoutForm = document.querySelector('form[action="/api/auth/logout"]');
+  logoutForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    sessionStorage.removeItem('access_token');
+    window.location.href = '/login';
+  });
+
   // Colapsar/expandir sidebar en desktop
   const collapseBtn = document.getElementById('sidebar-collapse-btn');
 

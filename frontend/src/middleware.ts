@@ -1,6 +1,6 @@
 import { defineMiddleware } from 'astro:middleware';
 
-const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/auth/refresh'];
+const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/auth/refresh', '/api/auth/logout'];
 
 export const onRequest = defineMiddleware(async ({ url, cookies, redirect }, next) => {
   const isPublic = PUBLIC_PATHS.some(path => url.pathname.startsWith(path));
