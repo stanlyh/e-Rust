@@ -1,3 +1,62 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* FullCalendar: permitir que la barra de herramientas haga wrap en pantallas angostas
+   en vez de desbordarse fuera del contenedor (que tiene overflow-hidden). */
+.fc .fc-toolbar {
+  flex-wrap: wrap;
+  row-gap: 0.5rem;
+}
+
+.fc .fc-toolbar-chunk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .fc .fc-toolbar-title {
+    font-size: 1rem;
+  }
+
+  .fc .fc-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .fc .fc-toolbar.fc-header-toolbar {
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Modo oscuro para FullCalendar (sus colores viven en CSS custom properties). */
+.dark .fc {
+  --fc-border-color: #374151;
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: #1f2937;
+  --fc-neutral-text-color: #9ca3af;
+  --fc-list-event-hover-bg-color: #374151;
+  --fc-today-bg-color: rgba(59, 130, 246, 0.12);
+  --fc-button-text-color: #e5e7eb;
+  --fc-button-bg-color: #374151;
+  --fc-button-border-color: #4b5563;
+  --fc-button-hover-bg-color: #4b5563;
+  --fc-button-hover-border-color: #6b7280;
+  --fc-button-active-bg-color: #4b5563;
+  --fc-button-active-border-color: #6b7280;
+}
+
+.dark .fc .fc-toolbar-title,
+.dark .fc .fc-col-header-cell-cushion,
+.dark .fc .fc-daygrid-day-number,
+.dark .fc .fc-timegrid-slot-label-cushion,
+.dark .fc .fc-list-day-cushion {
+  color: #e5e7eb;
+}
+
+.dark .fc .fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
+  color: #6b7280;
+}

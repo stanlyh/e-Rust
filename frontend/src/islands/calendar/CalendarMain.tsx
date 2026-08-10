@@ -104,7 +104,7 @@ export default function CalendarMain() {
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
       {/* Calendario principal */}
-      <div className="flex-1 bg-white rounded-xl border border-gray-200 shadow-sm p-3 md:p-4 overflow-hidden min-h-[400px]">
+      <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-3 md:p-4 overflow-hidden min-h-[400px]">
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -123,6 +123,7 @@ export default function CalendarMain() {
           events={calendarEvents}
           editable={true}
           selectable={true}
+          dayMaxEvents={true}
           dateClick={handleDateClick}
           eventClick={handleEventClick}
           datesSet={handleDatesSet}

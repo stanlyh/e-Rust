@@ -3,12 +3,12 @@ interface SkeletonProps {
 }
 
 export function Skeleton({ className = '' }: SkeletonProps) {
-  return <div className={`animate-pulse bg-gray-100 rounded ${className}`} />;
+  return <div className={`animate-pulse bg-gray-100 dark:bg-gray-700 rounded ${className}`} />;
 }
 
 export function TableSkeleton({ rows = 5, cols = 5 }: { rows?: number; cols?: number }) {
   return (
-    <tbody className="divide-y divide-gray-50">
+    <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
       {Array.from({ length: rows }).map((_, i) => (
         <tr key={i}>
           {Array.from({ length: cols }).map((_, j) => (
@@ -26,7 +26,7 @@ export function CardSkeleton({ count = 6 }: { count?: number }) {
   return (
     <>
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="bg-white rounded-xl border border-gray-200 p-4 animate-pulse">
+        <div key={i} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 animate-pulse">
           <Skeleton className="h-32 w-full mb-3" />
           <Skeleton className="h-4 w-3/4 mb-2" />
           <Skeleton className="h-3 w-1/2" />

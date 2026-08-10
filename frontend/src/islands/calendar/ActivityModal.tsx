@@ -121,41 +121,41 @@ export default function ActivityModal({ activity, defaultDate, onClose, onSaved 
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-gray-100">
-          <h2 className="text-base font-semibold text-gray-900">
+        <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-700 shrink-0">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">
             {activity ? 'Detalle de actividad' : 'Nueva actividad'}
           </h2>
           <div className="flex items-center gap-2">
             {activity && (
-              <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+              <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-gray-600 dark:text-gray-300">
                 {STATUS_LABELS[activity.status] ?? activity.status}
               </span>
             )}
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">
+            <button onClick={onClose} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-xl leading-none">
               ×
             </button>
           </div>
         </div>
 
         {/* Body */}
-        <div className="p-5">
+        <div className="p-5 overflow-y-auto">
           {!completeMode ? (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Titulo *</label>
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Titulo *</label>
                 <input
                   {...register('title')}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Llamar a cliente sobre propuesta"
                 />
-                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
+                {errors.title && <p className="text-red-500 dark:text-red-400 text-xs mt-1">{errors.title.message}</p>}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Tipo *</label>
-                <select {...register('type')} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Tipo *</label>
+                <select {...register('type')} className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm">
                   {TYPE_OPTIONS.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
@@ -164,43 +164,43 @@ export default function ActivityModal({ activity, defaultDate, onClose, onSaved 
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Inicio *</label>
+                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Inicio *</label>
                   <input
                     {...register('scheduled_start')}
                     type="datetime-local"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  {errors.scheduled_start && <p className="text-red-500 text-xs mt-1">{errors.scheduled_start.message}</p>}
+                  {errors.scheduled_start && <p className="text-red-500 dark:text-red-400 text-xs mt-1">{errors.scheduled_start.message}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Fin *</label>
+                  <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Fin *</label>
                   <input
                     {...register('scheduled_end')}
                     type="datetime-local"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  {errors.scheduled_end && <p className="text-red-500 text-xs mt-1">{errors.scheduled_end.message}</p>}
+                  {errors.scheduled_end && <p className="text-red-500 dark:text-red-400 text-xs mt-1">{errors.scheduled_end.message}</p>}
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Descripcion</label>
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Descripcion</label>
                 <textarea
                   {...register('description')}
                   rows={2}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                   placeholder="Detalles adicionales..."
                 />
               </div>
 
               {/* Footer del form */}
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                <div className="flex flex-wrap gap-3">
                   {activity && activity.status === 'scheduled' && (
                     <button
                       type="button"
                       onClick={() => setCompleteMode(true)}
-                      className="text-sm text-green-600 hover:text-green-700 font-medium"
+                      className="text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium"
                     >
                       ✓ Completar
                     </button>
@@ -209,14 +209,14 @@ export default function ActivityModal({ activity, defaultDate, onClose, onSaved 
                     <button
                       type="button"
                       onClick={handleDelete}
-                      className="text-sm text-red-500 hover:text-red-600"
+                      className="text-sm text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300"
                     >
                       Eliminar
                     </button>
                   )}
                 </div>
-                <div className="flex gap-2">
-                  <button type="button" onClick={onClose} className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1.5">
+                <div className="flex gap-2 ml-auto">
+                  <button type="button" onClick={onClose} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-3 py-1.5">
                     Cancelar
                   </button>
                   <button
@@ -232,28 +232,28 @@ export default function ActivityModal({ activity, defaultDate, onClose, onSaved 
           ) : (
             /* Modo completar actividad */
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">Registra el resultado de esta actividad.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Registra el resultado de esta actividad.</p>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Resultado *</label>
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Resultado *</label>
                 <textarea
                   value={outcome}
                   onChange={e => setOutcome(e.target.value)}
                   rows={3}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                   placeholder="Que paso en esta actividad?"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Proxima accion</label>
+                <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Proxima accion</label>
                 <input
                   value={nextAction}
                   onChange={e => setNextAction(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enviar propuesta el lunes"
                 />
               </div>
               <div className="flex justify-between pt-2">
-                <button type="button" onClick={() => setCompleteMode(false)} className="text-sm text-gray-500">
+                <button type="button" onClick={() => setCompleteMode(false)} className="text-sm text-gray-500 dark:text-gray-400">
                   Volver
                 </button>
                 <button

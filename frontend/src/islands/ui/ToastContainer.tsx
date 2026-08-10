@@ -9,10 +9,10 @@ const ICONS: Record<string, string> = {
 };
 
 const STYLES: Record<string, string> = {
-  success: 'bg-green-50 border-green-300 text-green-800',
-  error:   'bg-red-50 border-red-300 text-red-800',
-  warning: 'bg-orange-50 border-orange-300 text-orange-800',
-  info:    'bg-blue-50 border-blue-300 text-blue-800',
+  success: 'bg-green-50 dark:bg-green-950/60 border-green-300 dark:border-green-800 text-green-800 dark:text-green-300',
+  error:   'bg-red-50 dark:bg-red-950/60 border-red-300 dark:border-red-800 text-red-800 dark:text-red-300',
+  warning: 'bg-orange-50 dark:bg-orange-950/60 border-orange-300 dark:border-orange-800 text-orange-800 dark:text-orange-300',
+  info:    'bg-blue-50 dark:bg-blue-950/60 border-blue-300 dark:border-blue-800 text-blue-800 dark:text-blue-300',
 };
 
 const ICON_STYLES: Record<string, string> = {

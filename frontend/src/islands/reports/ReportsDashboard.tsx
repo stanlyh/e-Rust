@@ -4,6 +4,7 @@ import {
   FunnelChart, Funnel, LabelList, Cell,
 } from 'recharts';
 import { dashboardApi, type DashboardReport } from '../../lib/api/dashboard';
+import { useTheme } from '../../lib/useTheme';
 
 // ── KPI Card ─────────────────────────────────────────────────────────────────
 function KPICard({
@@ -22,40 +23,44 @@ function KPICard({
     : value.toLocaleString('es-MX');
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-      <p className="text-xs text-gray-500 font-medium mb-1">{title}</p>
-      <p className="text-2xl font-bold text-gray-900">{formatted}</p>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
+      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mb-1">{title}</p>
+      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{formatted}</p>
       {trend !== undefined && (
-        <p className={`text-xs mt-1 font-medium ${trend >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+        <p className={`text-xs mt-1 font-medium ${trend >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`}>
           {trend >= 0 ? '▲' : '▼'} {Math.abs(trend).toFixed(1)}% vs mes anterior
         </p>
       )}
-      {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{subtitle}</p>}
     </div>
   );
 }
 
 // ── Grafico de ventas mensuales ───────────────────────────────────────────────
 function SalesChart({ data }: { data: { month: string; revenue: number; count: number }[] }) {
+  const isDark = useTheme();
   const formatted = data.map(d => ({
     ...d,
     label: d.month.slice(5), // "04" de "2026-04"
   }));
+  const tickColor = isDark ? '#9ca3af' : undefined;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-      <h2 className="text-sm font-semibold text-gray-700 mb-4">Ventas por mes (ultimos 12 meses)</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
+      <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Ventas por mes (ultimos 12 meses)</h2>
       {formatted.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-8">Sin datos de ventas aun</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-8">Sin datos de ventas aun</p>
       ) : (
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={formatted} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-            <YAxis tickFormatter={v => `$${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#f0f0f0'} />
+            <XAxis dataKey="label" tick={{ fontSize: 11, fill: tickColor }} />
+            <YAxis tickFormatter={v => `$${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: tickColor }} />
             <Tooltip
               formatter={(value: number) => [`$${value.toLocaleString('es-MX')}`, 'Revenue']}
               labelFormatter={label => `Mes ${label}`}
+              contentStyle={isDark ? { backgroundColor: '#1f2937', border: '1px solid #374151', color: '#e5e7eb' } : undefined}
+              labelStyle={isDark ? { color: '#e5e7eb' } : undefined}
             />
             <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} />
           </BarChart>
@@ -70,19 +75,19 @@ const FUNNEL_COLORS = ['#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#22c55e'];
 
 function ConversionFunnel({ data }: { data: { label: string; count: number }[] }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-      <h2 className="text-sm font-semibold text-gray-700 mb-4">Funnel de conversion</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
+      <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Funnel de conversion</h2>
       <div className="space-y-2">
         {data.map((step, i) => {
           const maxCount = data[0]?.count ?? 1;
           const pct = maxCount > 0 ? (step.count / maxCount) * 100 : 0;
           return (
             <div key={step.label}>
-              <div className="flex justify-between text-xs text-gray-600 mb-1">
+              <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
                 <span>{step.label}</span>
                 <span className="font-medium">{step.count}</span>
               </div>
-              <div className="h-6 bg-gray-100 rounded-full overflow-hidden">
+              <div className="h-6 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full flex items-center pl-2 transition-all"
                   style={{ width: `${Math.max(pct, 2)}%`, backgroundColor: FUNNEL_COLORS[i] ?? '#6b7280' }}
@@ -103,14 +108,14 @@ function ConversionFunnel({ data }: { data: { label: string; count: number }[] }
 // ── Tabla de agentes ──────────────────────────────────────────────────────────
 function AgentsTable({ agents }: { agents: DashboardReport['agents'] }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-      <div className="p-4 border-b border-gray-100">
-        <h2 className="text-sm font-semibold text-gray-700">Performance por agente</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+      <div className="p-4 border-b border-gray-100 dark:border-gray-700">
+        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Performance por agente</h2>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-left text-xs text-gray-500 uppercase border-b border-gray-100">
+            <tr className="text-left text-xs text-gray-500 dark:text-gray-400 uppercase border-b border-gray-100 dark:border-gray-700">
               <th className="px-4 py-3">Agente</th>
               <th className="px-4 py-3">Leads</th>
               <th className="px-4 py-3">Opps. abiertas</th>
@@ -118,18 +123,18 @@ function AgentsTable({ agents }: { agents: DashboardReport['agents'] }) {
               <th className="px-4 py-3">Revenue mes</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
             {agents.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-gray-400">Sin datos de agentes</td>
+                <td colSpan={5} className="px-4 py-8 text-center text-gray-400 dark:text-gray-500">Sin datos de agentes</td>
               </tr>
             ) : agents.map(a => (
-              <tr key={a.user_id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-800">{a.full_name}</td>
-                <td className="px-4 py-3 text-gray-600">{a.leads}</td>
-                <td className="px-4 py-3 text-gray-600">{a.opportunities_open}</td>
-                <td className="px-4 py-3 text-gray-600">{a.sales_this_month}</td>
-                <td className="px-4 py-3 font-semibold text-blue-600">
+              <tr key={a.user_id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <td className="px-4 py-3 font-medium text-gray-800 dark:text-gray-200">{a.full_name}</td>
+                <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{a.leads}</td>
+                <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{a.opportunities_open}</td>
+                <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{a.sales_this_month}</td>
+                <td className="px-4 py-3 font-semibold text-blue-600 dark:text-blue-400">
                   ${a.revenue_this_month.toLocaleString('es-MX', { maximumFractionDigits: 0 })}
                 </td>
               </tr>
@@ -158,17 +163,17 @@ export default function ReportsDashboard() {
     <div className="space-y-4">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-white rounded-xl border border-gray-200 p-5 animate-pulse">
-            <div className="h-3 bg-gray-100 rounded mb-3 w-1/2" />
-            <div className="h-7 bg-gray-100 rounded" />
+          <div key={i} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 animate-pulse">
+            <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded mb-3 w-1/2" />
+            <div className="h-7 bg-gray-100 dark:bg-gray-700 rounded" />
           </div>
         ))}
       </div>
-      <div className="h-64 bg-white rounded-xl border border-gray-200 animate-pulse" />
+      <div className="h-64 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 animate-pulse" />
     </div>
   );
 
-  if (error || !report) return <p className="text-red-500 text-sm">{error}</p>;
+  if (error || !report) return <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>;
 
   const { kpis, monthly_sales, funnel, agents } = report;
 

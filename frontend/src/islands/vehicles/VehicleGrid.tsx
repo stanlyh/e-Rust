@@ -72,13 +72,13 @@ export default function VehicleGrid() {
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-1.5 border rounded-lg px-3 py-1.5 text-sm transition-colors
-              ${showFilters ? 'border-blue-400 bg-blue-50 text-blue-700' : 'border-gray-300 text-gray-600 hover:bg-gray-50'}`}
+              ${showFilters ? 'border-blue-400 dark:border-blue-600 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300' : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50'}`}
           >
             ⚙ Filtros {hasActiveFilters && <span className="bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">!</span>}
           </button>
-          <span className="text-sm text-gray-400">{total} vehiculos</span>
+          <span className="text-sm text-gray-400 dark:text-gray-500">{total} vehiculos</span>
           {hasActiveFilters && (
-            <button onClick={resetFilters} className="text-xs text-gray-500 hover:text-blue-600 underline">
+            <button onClick={resetFilters} className="text-xs text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 underline">
               Limpiar
             </button>
           )}
@@ -90,23 +90,23 @@ export default function VehicleGrid() {
 
       {/* Panel de filtros */}
       {showFilters && (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4 mb-4 grid grid-cols-2 md:grid-cols-4 gap-3">
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Marca</label>
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Marca</label>
             <input
               value={filters.make}
               onChange={e => setFilters(f => ({ ...f, make: e.target.value }))}
               placeholder="Toyota, Ford..."
-              className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Condicion</label>
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Condicion</label>
             <select
               value={filters.condition}
               onChange={e => setFilters(f => ({ ...f, condition: e.target.value }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-1.5 text-sm"
             >
               <option value="">Todas</option>
               {Object.entries(CONDITION_LABELS).map(([v, l]) => (
@@ -116,29 +116,29 @@ export default function VehicleGrid() {
           </div>
 
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Precio minimo ($)</label>
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Precio minimo ($)</label>
             <input
               type="number"
               value={filters.min_price}
               onChange={e => setFilters(f => ({ ...f, min_price: e.target.value }))}
               placeholder="0"
-              className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-xs text-gray-500 mb-1">Precio maximo ($)</label>
+            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Precio maximo ($)</label>
             <input
               type="number"
               value={filters.max_price}
               onChange={e => setFilters(f => ({ ...f, max_price: e.target.value }))}
               placeholder="999999"
-              className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+              className="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-1.5 text-sm"
             />
           </div>
 
           <div className="col-span-2 md:col-span-4">
-            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
               <input
                 type="checkbox"
                 checked={filters.available_only}
@@ -174,21 +174,21 @@ export default function VehicleGrid() {
               <a
                 key={v.id}
                 href={`/vehicles/${v.id}`}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-4 block"
+                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow p-4 block"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div>
-                    <p className="font-semibold text-gray-900">{v.year} {v.make} {v.model}</p>
-                    {v.trim && <p className="text-xs text-gray-500">{v.trim}</p>}
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">{v.year} {v.make} {v.model}</p>
+                    {v.trim && <p className="text-xs text-gray-500 dark:text-gray-400">{v.trim}</p>}
                   </div>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${
-                    v.is_available ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                    v.is_available ? 'bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
                   }`}>
                     {v.is_available ? 'Disponible' : 'No disponible'}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-gray-500 mb-3 flex-wrap">
+                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-3 flex-wrap">
                   <span>{FUEL_LABELS[v.fuel_type]}</span>
                   <span>·</span>
                   <span>{CONDITION_LABELS[v.condition]}</span>
@@ -197,14 +197,14 @@ export default function VehicleGrid() {
                   )}
                 </div>
 
-                <p className="text-lg font-bold text-blue-600">
+                <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                   ${Number(v.list_price).toLocaleString('es-MX')}
                 </p>
               </a>
             ))}
           </div>
 
-          <div className="mt-4 bg-white rounded-xl border border-gray-200">
+          <div className="mt-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
             <Pagination page={page} total={total} perPage={PER_PAGE} onPage={load} />
           </div>
         </>

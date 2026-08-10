@@ -49,12 +49,12 @@ export const STATUS_LABELS: Record<OpportunityStatus, string> = {
 };
 
 export const STATUS_COLORS: Record<OpportunityStatus, string> = {
-  prospecting:    'border-blue-300 bg-blue-50',
-  needs_analysis: 'border-yellow-300 bg-yellow-50',
-  proposal:       'border-orange-300 bg-orange-50',
-  negotiation:    'border-purple-300 bg-purple-50',
-  closed_won:     'border-green-300 bg-green-50',
-  closed_lost:    'border-gray-300 bg-gray-50',
+  prospecting:    'border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30',
+  needs_analysis: 'border-yellow-300 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950/30',
+  proposal:       'border-orange-300 dark:border-orange-800 bg-orange-50 dark:bg-orange-950/30',
+  negotiation:    'border-purple-300 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/30',
+  closed_won:     'border-green-300 dark:border-green-800 bg-green-50 dark:bg-green-950/30',
+  closed_lost:    'border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60',
 };
 
 export const STAGE_ORDER: OpportunityStatus[] = [

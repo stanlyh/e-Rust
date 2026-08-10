@@ -41,14 +41,14 @@ export default function LeadTable() {
   useEffect(() => { load(1); }, [statusFilter, sourceFilter]);
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-gray-100">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 border-b border-gray-100 dark:border-gray-700">
         <div className="flex flex-wrap items-center gap-2">
           <select
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-1.5 text-sm"
           >
             <option value="">Todos los estados</option>
             {Object.entries(STATUS_LABELS).map(([v, l]) => (
@@ -59,7 +59,7 @@ export default function LeadTable() {
           <select
             value={sourceFilter}
             onChange={e => setSourceFilter(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 rounded-lg px-3 py-1.5 text-sm"
           >
             <option value="">Todas las fuentes</option>
             {Object.entries(SOURCE_LABELS).map(([v, l]) => (
@@ -70,13 +70,13 @@ export default function LeadTable() {
           {(statusFilter || sourceFilter) && (
             <button
               onClick={() => { setStatusFilter(''); setSourceFilter(''); }}
-              className="text-xs text-gray-500 hover:text-blue-600 underline"
+              className="text-xs text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 underline"
             >
               Limpiar filtros
             </button>
           )}
 
-          <span className="text-sm text-gray-400">{total} leads</span>
+          <span className="text-sm text-gray-400 dark:text-gray-500">{total} leads</span>
         </div>
 
         <a
@@ -95,7 +95,7 @@ export default function LeadTable() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 text-left text-xs text-gray-500 uppercase">
+                <tr className="border-b border-gray-100 dark:border-gray-700 text-left text-xs text-gray-500 dark:text-gray-400 uppercase">
                   <th className="px-4 py-3">Estado</th>
                   <th className="px-4 py-3">Fuente</th>
                   <th className="px-4 py-3">Interes</th>
@@ -122,28 +122,28 @@ export default function LeadTable() {
                   </tr>
                 </tbody>
               ) : (
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-gray-50 dark:divide-gray-700">
                   {leads.map(lead => (
-                    <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={lead.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <td className="px-4 py-3">
                         <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_COLORS[lead.status]}`}>
                           {STATUS_LABELS[lead.status]}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-600">{SOURCE_LABELS[lead.source]}</td>
-                      <td className="px-4 py-3 text-gray-800">
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{SOURCE_LABELS[lead.source]}</td>
+                      <td className="px-4 py-3 text-gray-800 dark:text-gray-200">
                         {[lead.interest_year, lead.interest_make, lead.interest_model].filter(Boolean).join(' ') || '—'}
                       </td>
-                      <td className="px-4 py-3 text-gray-600 hidden sm:table-cell">
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-400 hidden sm:table-cell">
                         {lead.budget_min || lead.budget_max
                           ? `$${lead.budget_min ?? '?'} – $${lead.budget_max ?? '?'}`
                           : '—'}
                       </td>
-                      <td className="px-4 py-3 text-gray-400 text-xs hidden md:table-cell">
+                      <td className="px-4 py-3 text-gray-400 dark:text-gray-500 text-xs hidden md:table-cell">
                         {new Date(lead.created_at).toLocaleDateString('es-MX')}
                       </td>
                       <td className="px-4 py-3">
-                        <a href={`/leads/${lead.id}`} className="text-blue-600 hover:underline text-xs font-medium">
+                        <a href={`/leads/${lead.id}`} className="text-blue-600 dark:text-blue-400 hover:underline text-xs font-medium">
                           Ver →
                         </a>
                       </td>

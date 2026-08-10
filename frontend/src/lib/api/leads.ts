@@ -57,11 +57,11 @@ export const STATUS_LABELS: Record<LeadStatus, string> = {
 };
 
 export const STATUS_COLORS: Record<LeadStatus, string> = {
-  new: 'bg-blue-100 text-blue-700',
-  contacted: 'bg-yellow-100 text-yellow-700',
-  qualified: 'bg-green-100 text-green-700',
-  unqualified: 'bg-gray-100 text-gray-500',
-  converted: 'bg-purple-100 text-purple-700',
+  new: 'bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300',
+  contacted: 'bg-yellow-100 dark:bg-yellow-950/60 text-yellow-700 dark:text-yellow-300',
+  qualified: 'bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-300',
+  unqualified: 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400',
+  converted: 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300',
 };
 
 export const leadsApi = {

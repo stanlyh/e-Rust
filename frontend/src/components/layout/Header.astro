@@ -5,11 +5,11 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<header class="h-16 bg-amber-50 border-b border-gray-200 flex items-center justify-between px-4 md:px-6 shrink-0 shadow-sm">
+<header class="h-16 bg-amber-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 md:px-6 shrink-0 shadow-sm transition-colors">
   <div class="flex items-center gap-3">
     <button
       id="menu-btn"
-      class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+      class="md:hidden flex items-center justify-center w-9 h-9 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
       aria-label="Abrir menu"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -17,14 +17,28 @@ const { title } = Astro.props;
       </svg>
     </button>
     <div>
-      <h1 class="text-base font-semibold text-gray-800 leading-tight">{title}</h1>
-      <p class="text-xs text-gray-400 hidden sm:block" id="current-date"></p>
+      <h1 class="text-base font-semibold text-gray-800 dark:text-gray-100 leading-tight">{title}</h1>
+      <p class="text-xs text-gray-400 dark:text-gray-500 hidden sm:block" id="current-date"></p>
     </div>
   </div>
 
   <div class="flex items-center gap-2">
+    <!-- Toggle modo oscuro -->
+    <button
+      id="theme-toggle"
+      class="relative w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+      aria-label="Cambiar tema"
+    >
+      <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1.5m0 15V21m9-9h-1.5m-15 0H3m15.36-6.36l-1.06 1.06M6.7 17.3l-1.06 1.06m0-12.72L6.7 6.7m10.6 10.6l1.06 1.06M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+      </svg>
+      <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+      </svg>
+    </button>
+
     <!-- Notificaciones placeholder -->
-    <button class="relative w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+    <button class="relative w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
       </svg>
@@ -38,6 +52,8 @@ const { title } = Astro.props;
 </header>
 
 <script>
+  import { getTheme, toggleTheme } from '../../lib/theme';
+
   const dateEl = document.getElementById('current-date');
   if (dateEl) {
     dateEl.textContent = new Date().toLocaleDateString('es-MX', {
@@ -55,4 +71,21 @@ const { title } = Astro.props;
       }
     } catch {}
   }
+
+  // Toggle de modo oscuro
+  const themeToggle = document.getElementById('theme-toggle');
+  const sunIcon = document.getElementById('theme-icon-sun');
+  const moonIcon = document.getElementById('theme-icon-moon');
+
+  function syncThemeIcon() {
+    const isDark = getTheme() === 'dark';
+    sunIcon?.classList.toggle('hidden', !isDark);
+    moonIcon?.classList.toggle('hidden', isDark);
+  }
+
+  syncThemeIcon();
+  themeToggle?.addEventListener('click', () => {
+    toggleTheme();
+    syncThemeIcon();
+  });
 </script>

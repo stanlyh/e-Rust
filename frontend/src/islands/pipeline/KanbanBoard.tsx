@@ -27,20 +27,20 @@ import {
 // ── Tarjeta individual ────────────────────────────────────────────────────────
 function KanbanCard({ opp, isDragging = false }: { opp: Opportunity; isDragging?: boolean }) {
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 p-3 shadow-sm select-none
+    <div className={`bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 shadow-sm select-none
       ${isDragging ? 'opacity-80 shadow-lg rotate-1' : 'hover:shadow-md transition-shadow'}`}
     >
-      <p className="text-sm font-medium text-gray-800 truncate mb-1">{opp.title}</p>
+      <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate mb-1">{opp.title}</p>
       <div className="flex items-center justify-between">
-        <span className="text-xs text-gray-500">{opp.probability}% prob.</span>
+        <span className="text-xs text-gray-500 dark:text-gray-400">{opp.probability}% prob.</span>
         {opp.offered_price && (
-          <span className="text-xs font-semibold text-blue-600">
+          <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
             ${Number(opp.offered_price).toLocaleString('es-MX')}
           </span>
         )}
       </div>
       {opp.expected_close && (
-        <p className="text-xs text-gray-400 mt-1">
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
           Cierre: {new Date(opp.expected_close).toLocaleDateString('es-MX')}
         </p>
       )}
@@ -72,17 +72,17 @@ function KanbanColumn({ column }: { column: PipelineColumn }) {
   return (
     <div className={`flex flex-col w-64 shrink-0 rounded-xl border-2 ${colorClass} overflow-hidden`}>
       {/* Header de columna */}
-      <div className="p-3 border-b border-black/10">
+      <div className="p-3 border-b border-black/10 dark:border-white/10">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-gray-700">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
             {STATUS_LABELS[column.status]}
           </h3>
-          <span className="text-xs bg-white/60 rounded-full px-2 py-0.5 text-gray-600 font-medium">
+          <span className="text-xs bg-white/60 dark:bg-black/20 rounded-full px-2 py-0.5 text-gray-600 dark:text-gray-300 font-medium">
             {column.count}
           </span>
         </div>
         {column.total_value > 0 && (
-          <p className="text-xs text-gray-500 mt-0.5">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
             ${column.total_value.toLocaleString('es-MX')} total
           </p>
         )}
@@ -179,7 +179,7 @@ export default function KanbanBoard() {
   if (loading) return (
     <div className="flex gap-4">
       {STAGE_ORDER.map(s => (
-        <div key={s} className="w-64 h-64 bg-gray-100 rounded-xl animate-pulse shrink-0" />
+        <div key={s} className="w-64 h-64 bg-gray-100 dark:bg-gray-800 rounded-xl animate-pulse shrink-0" />
       ))}
     </div>
   );
